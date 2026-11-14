@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:our_memoirs_codebase/features/frame_selection/presentation/bloc/frame_selection_cubit.dart';
+import 'package:our_memoirs_codebase/features/frame_selection/presentation/page/frame_selection_page.dart';
 import 'package:our_memoirs_codebase/features/instruction/presentation/page/instruction_page.dart';
 import 'package:our_memoirs_codebase/features/onboarding/presentation/page/onboarding_page.dart';
 import 'package:our_memoirs_codebase/features/payment/presentation/bloc/payment_cubit.dart';
@@ -65,14 +67,26 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.payment,
       pageBuilder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final String orderId = extra?['idOrder'] ?? '';
         return fadePage(
           state: state,
           child: BlocProvider(
-            create: (context) => PaymentCubit()..startTimer(),
+            create: (context) => PaymentCubit()..startTimer(orderId),
             child: const PaymentPage(),
           ),
         );
       },
+    ),
+    GoRoute(
+      path: AppRoutes.frameSelection,
+      pageBuilder: (context, state) => fadePage(
+        state: state,
+        child: BlocProvider(
+          create: (context) => FrameCubit(),
+          child: const FrameSelectionPage(),
+        ),
+      ),
     ),
   ],
 );

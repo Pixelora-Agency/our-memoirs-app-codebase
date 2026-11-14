@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:our_memoirs_codebase/core/constants/app_typo.dart';
-import 'package:our_memoirs_codebase/core/widgets/app_card.dart';
-import 'package:our_memoirs_codebase/core/widgets/app_icon.dart';
+import 'package:our_memoirs_codebase/core/widgets/ui/app_card.dart';
+import 'package:our_memoirs_codebase/core/widgets/ui/app_icon.dart';
 import 'package:our_memoirs_codebase/features/instruction/data/instruction_data.dart';
 
 import 'instruction_item.dart';

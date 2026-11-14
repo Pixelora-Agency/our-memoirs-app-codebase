@@ -3,12 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:our_memoirs_codebase/app/routes/app_router.dart';
 import 'package:our_memoirs_codebase/core/constants/app_colors.dart';
+import 'package:our_memoirs_codebase/core/constants/app_icons.dart';
 import 'package:our_memoirs_codebase/core/constants/app_typo.dart';
 import 'package:our_memoirs_codebase/core/utils/format_price.dart';
-import 'package:our_memoirs_codebase/core/widgets/app_button.dart';
-import 'package:our_memoirs_codebase/core/widgets/app_card.dart';
-import 'package:our_memoirs_codebase/core/widgets/app_dialog.dart';
-import 'package:our_memoirs_codebase/core/widgets/app_textfield.dart';
+import 'package:our_memoirs_codebase/core/widgets/ui/app_button.dart';
+import 'package:our_memoirs_codebase/core/widgets/ui/app_card.dart';
+import 'package:our_memoirs_codebase/core/widgets/ui/app_dialog.dart';
+import 'package:our_memoirs_codebase/core/widgets/ui/app_icon.dart';
+import 'package:our_memoirs_codebase/core/widgets/ui/app_textfield.dart';
+import 'package:our_memoirs_codebase/core/widgets/virtual_keyboard_scaffold.dart';
 import 'package:our_memoirs_codebase/features/review_order/presentation/bloc/review_order_state.dart';
 
 import '../bloc/review_order_cubit.dart';
@@ -22,7 +25,7 @@ class ReviewOrderPage extends StatelessWidget {
     final cubit = context.watch<ReviewOrderCubit>();
     final TextEditingController voucherController = TextEditingController();
 
-    return Scaffold(
+    return VirtualKeyboardScaffold(
       backgroundColor: theme.colorScheme.onPrimary,
       body: BlocConsumer<ReviewOrderCubit, ReviewOrderState>(
         listener: (context, state) {
@@ -31,13 +34,17 @@ class ReviewOrderPage extends StatelessWidget {
               AppDialog.show(
                 context,
                 title: "Processing Order",
-                message: "Please wait while we process your order...",
                 type: DialogType.loading,
                 barrierDismissible: false,
               );
             },
-            success: (qrCodeData) {
-              context.push(AppRoutes.payment, extra: qrCodeData);
+            success: (qrCodeData, idOrder) {
+              context.pop();
+
+              context.go(
+                AppRoutes.payment,
+                extra: {'qrCodeData': qrCodeData, 'idOrder': idOrder},
+              );
             },
             error: (message) {
               Navigator.pop(context);
@@ -129,7 +136,7 @@ class ReviewOrderPage extends StatelessWidget {
                                 width: 1000,
                                 height: 412,
                                 padding: EdgeInsets.all(42),
-                                child: Container(
+                                child: SizedBox(
                                   width: 800,
                                   child: Column(
                                     children: [
@@ -155,9 +162,9 @@ class ReviewOrderPage extends StatelessWidget {
                                           children: [
                                             Row(
                                               children: [
-                                                const Icon(
-                                                  Icons.print,
-                                                  size: 65,
+                                                AppIcon(
+                                                  AppIcons.printerIcon,
+                                                  size: 48,
                                                   color: AppColors.primary700,
                                                 ),
                                                 const SizedBox(width: 12),

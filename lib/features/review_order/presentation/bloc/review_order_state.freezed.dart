@@ -132,13 +132,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( int quantity,  int totalPrice)?  loaded,TResult Function( String qrCodeData)?  success,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( int quantity,  int totalPrice)?  loaded,TResult Function( String qrCodeData,  String idOrder)?  success,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
 return loaded(_that.quantity,_that.totalPrice);case _Success() when success != null:
-return success(_that.qrCodeData);case _Error() when error != null:
+return success(_that.qrCodeData,_that.idOrder);case _Error() when error != null:
 return error(_that.message);case _:
   return orElse();
 
@@ -157,13 +157,13 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( int quantity,  int totalPrice)  loaded,required TResult Function( String qrCodeData)  success,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( int quantity,  int totalPrice)  loaded,required TResult Function( String qrCodeData,  String idOrder)  success,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Loaded():
 return loaded(_that.quantity,_that.totalPrice);case _Success():
-return success(_that.qrCodeData);case _Error():
+return success(_that.qrCodeData,_that.idOrder);case _Error():
 return error(_that.message);case _:
   throw StateError('Unexpected subclass');
 
@@ -181,13 +181,13 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( int quantity,  int totalPrice)?  loaded,TResult? Function( String qrCodeData)?  success,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( int quantity,  int totalPrice)?  loaded,TResult? Function( String qrCodeData,  String idOrder)?  success,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
 return loaded(_that.quantity,_that.totalPrice);case _Success() when success != null:
-return success(_that.qrCodeData);case _Error() when error != null:
+return success(_that.qrCodeData,_that.idOrder);case _Error() when error != null:
 return error(_that.message);case _:
   return null;
 
@@ -334,10 +334,11 @@ as int,
 
 
 class _Success implements ReviewOrderState {
-  const _Success({required this.qrCodeData});
+  const _Success({required this.qrCodeData, required this.idOrder});
   
 
  final  String qrCodeData;
+ final  String idOrder;
 
 /// Create a copy of ReviewOrderState
 /// with the given fields replaced by the non-null parameter values.
@@ -349,18 +350,18 @@ _$SuccessCopyWith<_Success> get copyWith => __$SuccessCopyWithImpl<_Success>(thi
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success&&(identical(other.qrCodeData, qrCodeData) || other.qrCodeData == qrCodeData));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success&&(identical(other.qrCodeData, qrCodeData) || other.qrCodeData == qrCodeData)&&(identical(other.idOrder, idOrder) || other.idOrder == idOrder));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,qrCodeData);
+    return Object.hash(runtimeType,qrCodeData,idOrder);
 }
 
 @override
 String toString() {
-    return 'ReviewOrderState.success(qrCodeData: $qrCodeData)';
+    return 'ReviewOrderState.success(qrCodeData: $qrCodeData, idOrder: $idOrder)';
 }
 
 
@@ -371,7 +372,7 @@ abstract mixin class _$SuccessCopyWith<$Res> implements $ReviewOrderStateCopyWit
   factory _$SuccessCopyWith(_Success value, $Res Function(_Success) _then) = __$SuccessCopyWithImpl;
 @useResult
 $Res call({
- String qrCodeData
+ String qrCodeData, String idOrder
 });
 
 
@@ -388,9 +389,10 @@ class __$SuccessCopyWithImpl<$Res>
 
 /// Create a copy of ReviewOrderState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? qrCodeData = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? qrCodeData = null,Object? idOrder = null,}) {
   return _then(_Success(
 qrCodeData: null == qrCodeData ? _self.qrCodeData : qrCodeData // ignore: cast_nullable_to_non_nullable
+as String,idOrder: null == idOrder ? _self.idOrder : idOrder // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

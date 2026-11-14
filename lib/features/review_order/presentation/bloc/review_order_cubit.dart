@@ -43,7 +43,13 @@ class ReviewOrderCubit extends Cubit<ReviewOrderState> {
       if (cleanCode == "PROMO123" || cleanCode == "DISKON50") {
         const simulatedQrPayload =
             "https://api.qris.id/demo/qr-payload-promo-success";
-        emit(const ReviewOrderState.success(qrCodeData: simulatedQrPayload));
+        const idOrder = "OM-P0001";
+        emit(
+          const ReviewOrderState.success(
+            qrCodeData: simulatedQrPayload,
+            idOrder: idOrder,
+          ),
+        );
         return;
       } else {
         emit(
@@ -60,6 +66,16 @@ class ReviewOrderCubit extends Cubit<ReviewOrderState> {
 
     const simulatedQrPayload =
         "https://api.qris.id/demo/qr-payload-normal-12345";
-    emit(const ReviewOrderState.success(qrCodeData: simulatedQrPayload));
+    const idOrder = "OM-P0001";
+    emit(
+      const ReviewOrderState.success(
+        qrCodeData: simulatedQrPayload,
+        idOrder: idOrder,
+      ),
+    );
+  }
+
+  void resetState() {
+    emit(ReviewOrderState.loaded(quantity: quantity, totalPrice: totalPrice));
   }
 }

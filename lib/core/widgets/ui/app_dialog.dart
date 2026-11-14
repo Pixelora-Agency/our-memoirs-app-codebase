@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:our_memoirs_codebase/core/constants/app_typo.dart';
-import 'package:our_memoirs_codebase/core/widgets/app_button.dart';
+import 'package:our_memoirs_codebase/core/widgets/ui/app_button.dart';
 
 enum DialogType { loading, success, error, confirm }
 
@@ -34,7 +34,7 @@ class AppDialog extends StatefulWidget {
     BuildContext context, {
     Widget? icon,
     required String title,
-    required String message,
+    String? message,
     required DialogType type,
     String? confirmText,
     String? cancelText,
@@ -80,17 +80,34 @@ class _AppDialogState extends State<AppDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (widget.type == DialogType.loading) ...[
-                CircularProgressIndicator(color: theme.colorScheme.primary),
+                Padding(
+                  padding: const EdgeInsets.all(36),
+                  child: SizedBox(
+                    width: 48,
+                    height: 48,
+                    child: CircularProgressIndicator(
+                      color: theme.colorScheme.primary,
+                      strokeWidth: 4,
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 15),
               ] else if (widget.icon != null) ...[
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
+                if (widget.type == DialogType.confirm) ...[
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: widget.icon,
                   ),
-                  child: widget.icon,
-                ),
+                ] else ...[
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    child: widget.icon,
+                  ),
+                ],
                 const SizedBox(height: 16),
               ],
               Text(
@@ -103,18 +120,20 @@ class _AppDialogState extends State<AppDialog> {
                   letterSpacing: AppTypography.trackingSmall,
                 ),
               ),
-              const SizedBox(height: 12),
-              Text(
-                widget.message ?? "",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: theme.colorScheme.primary,
-                  fontSize: AppTypography.sizeLg,
-                  fontWeight: AppTypography.weightMedium,
-                  height: AppTypography.leadingTight,
-                  letterSpacing: AppTypography.trackingSmall,
+              if (widget.message != null) ...[
+                const SizedBox(height: 12),
+                Text(
+                  widget.message ?? "",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: theme.colorScheme.primary,
+                    fontSize: AppTypography.sizeLg,
+                    fontWeight: AppTypography.weightMedium,
+                    height: AppTypography.leadingTight,
+                    letterSpacing: AppTypography.trackingSmall,
+                  ),
                 ),
-              ),
+              ],
               if (widget.footer != null) ...[
                 const SizedBox(height: 24),
                 widget.footer!,

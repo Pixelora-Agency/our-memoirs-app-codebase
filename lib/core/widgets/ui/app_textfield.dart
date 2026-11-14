@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:our_memoirs_codebase/core/bloc/keyboard_cubit.dart';
 import 'package:our_memoirs_codebase/core/constants/app_colors.dart';
 import 'package:our_memoirs_codebase/core/constants/app_typo.dart';
 
@@ -12,6 +14,8 @@ class AppTextfield extends StatelessWidget {
   final Color borderColor;
   final Color backgroundColor;
   final ValueChanged<String>? onSubmitted;
+  final VoidCallback? onTap;
+  final bool readOnly;
   final double? width;
   final double? height;
 
@@ -26,6 +30,8 @@ class AppTextfield extends StatelessWidget {
     this.borderColor = AppColors.primary700,
     this.backgroundColor = Colors.white,
     this.onSubmitted,
+    this.onTap,
+    this.readOnly = true,
     this.width = double.infinity,
     this.height,
   });
@@ -44,7 +50,17 @@ class AppTextfield extends StatelessWidget {
       child: TextField(
         controller: controller,
         textAlign: TextAlign.center,
+        readOnly: readOnly,
         onSubmitted: onSubmitted,
+        onTap: () {
+          if (controller != null) {
+            try {
+              final keyboardCubit = context.read<KeyboardCubit>();
+              keyboardCubit.showKeyboard(controller!);
+            } catch (_) {}
+          }
+          if (onTap != null) onTap!();
+        },
         style: AppTypography.titleMedium.copyWith(color: AppColors.primary700),
         decoration: InputDecoration(
           hintText: hintText,

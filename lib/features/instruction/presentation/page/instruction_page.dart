@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:our_memoirs_codebase/app/routes/app_router.dart';
 import 'package:our_memoirs_codebase/core/constants/app_colors.dart';
 import 'package:our_memoirs_codebase/core/constants/app_typo.dart';
-import 'package:our_memoirs_codebase/core/widgets/app_button.dart';
+import 'package:our_memoirs_codebase/core/widgets/ui/app_button.dart';
 import 'package:our_memoirs_codebase/features/instruction/data/instruction_data.dart';
 import 'package:our_memoirs_codebase/features/instruction/presentation/widgets/instruction_grid.dart';
 

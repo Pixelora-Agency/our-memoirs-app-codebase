@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:our_memoirs_codebase/app/routes/app_router.dart';
 import 'package:our_memoirs_codebase/core/constants/app_colors.dart';
 import 'package:our_memoirs_codebase/core/constants/app_typo.dart';
 import 'package:our_memoirs_codebase/core/utils/format_time.dart';
-import 'package:our_memoirs_codebase/core/widgets/app_card.dart';
-import 'package:our_memoirs_codebase/core/widgets/app_dialog.dart';
+import 'package:our_memoirs_codebase/core/widgets/ui/app_card.dart';
+import 'package:our_memoirs_codebase/core/widgets/ui/app_dialog.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../bloc/payment_cubit.dart';
@@ -16,7 +17,8 @@ class PaymentPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String qrCodeData = GoRouterState.of(context).extra as String? ?? '';
+    final extra = GoRouterState.of(context).extra as Map<String, dynamic>?;
+    final String qrCodeData = extra?['qrCodeData'] ?? '';
     final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: theme.colorScheme.onPrimary,
@@ -33,7 +35,7 @@ class PaymentPage extends StatelessWidget {
               );
             },
             success: () {
-              context.go("");
+              context.go(AppRoutes.frameSelection);
             },
             error: (message) async {
               AppDialog.show(
@@ -53,7 +55,7 @@ class PaymentPage extends StatelessWidget {
               );
               await Future.delayed(const Duration(seconds: 2));
               if (context.mounted) {
-                context.pop(); // Kembali ke halaman sebelumnya
+                context.go(AppRoutes.reviewOrder);
               }
             },
           );
@@ -168,6 +170,23 @@ class PaymentPage extends StatelessWidget {
                                   style: theme.textTheme.titleMedium?.copyWith(
                                     color: AppColors.textBase,
                                     fontWeight: AppTypography.weightBold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: 1600,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                GestureDetector(
+                                  onTap: () =>
+                                      context.go(AppRoutes.frameSelection),
+                                  child: Text(
+                                    "Skip to Select Frame",
+                                    style: theme.textTheme.headlineSmall
+                                        ?.copyWith(color: AppColors.primary700),
                                   ),
                                 ),
                               ],

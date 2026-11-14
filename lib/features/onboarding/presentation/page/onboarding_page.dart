@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:our_memoirs_codebase/app/routes/app_router.dart';
 import 'package:our_memoirs_codebase/core/constants/app_typo.dart';
-import 'package:our_memoirs_codebase/core/widgets/app_button.dart';
+import 'package:our_memoirs_codebase/core/widgets/ui/app_button.dart';
 
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({super.key});

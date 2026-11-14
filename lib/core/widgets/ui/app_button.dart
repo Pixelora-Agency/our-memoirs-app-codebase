@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_typo.dart';
+import '../../constants/app_colors.dart';
+import '../../constants/app_typo.dart';
 
 enum AppButtonVariant { primary, outline, custom }
 

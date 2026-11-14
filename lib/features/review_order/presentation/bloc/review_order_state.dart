@@ -10,7 +10,9 @@ class ReviewOrderState with _$ReviewOrderState {
     required int quantity,
     required int totalPrice,
   }) = _Loaded;
-  const factory ReviewOrderState.success({required String qrCodeData}) =
-      _Success;
+  const factory ReviewOrderState.success({
+    required String qrCodeData,
+    required String idOrder,
+  }) = _Success;
   const factory ReviewOrderState.error(String message) = _Error;
 }
