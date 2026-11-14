@@ -17,6 +17,8 @@ class FrameGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       itemCount: dataFrames.length,
+      physics: const AlwaysScrollableScrollPhysics(),
+      shrinkWrap: false,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         crossAxisSpacing: 16,
