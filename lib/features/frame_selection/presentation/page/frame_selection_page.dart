@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:our_memoirs_codebase/app/routes/app_router.dart';
 import 'package:our_memoirs_codebase/core/constants/app_colors.dart';
 import 'package:our_memoirs_codebase/core/constants/app_typo.dart';
 import 'package:our_memoirs_codebase/core/widgets/tile_grid_painter.dart';
@@ -144,7 +146,12 @@ class FrameSelectionPage extends StatelessWidget {
                                     const SizedBox(height: 24),
                                     AppButton(
                                       label: "Start Take Photo",
-                                      onTap: () {},
+                                      onTap: () {
+                                        context.go(
+                                          AppRoutes.cameraSession,
+                                          extra: currentSelected,
+                                        );
+                                      },
                                       borderRadius: 100,
                                       suffixIcon: Icon(
                                         Icons.arrow_forward_ios,

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:our_memoirs_codebase/features/camera_session/presentation/bloc/camera_session_cubit.dart';
+import 'package:our_memoirs_codebase/features/camera_session/presentation/page/camera_session_page.dart';
+import 'package:our_memoirs_codebase/features/frame_selection/data/frame_model_data.dart';
 import 'package:our_memoirs_codebase/features/frame_selection/presentation/bloc/frame_selection_cubit.dart';
 import 'package:our_memoirs_codebase/features/frame_selection/presentation/page/frame_selection_page.dart';
 import 'package:our_memoirs_codebase/features/instruction/presentation/page/instruction_page.dart';
@@ -87,6 +90,19 @@ final GoRouter appRouter = GoRouter(
           child: const FrameSelectionPage(),
         ),
       ),
+    ),
+    GoRoute(
+      path: AppRoutes.cameraSession,
+      pageBuilder: (context, state) {
+        final frame = state.extra as FrameModel;
+        return fadePage(
+          state: state,
+          child: BlocProvider(
+            create: (context) => CameraSessionCubit()..initialPrepare(frame),
+            child: const CameraSessionPage(),
+          ),
+        );
+      },
     ),
   ],
 );
