@@ -4,7 +4,10 @@ part 'review_order_state.freezed.dart';
 
 @freezed
 class ReviewOrderState with _$ReviewOrderState {
-  const factory ReviewOrderState.initial() = _Initial;
+  const factory ReviewOrderState.initial({
+    @Default(1) int quantity,
+    @Default(36000) int totalPrice,
+  }) = _Initial;
   const factory ReviewOrderState.loading() = _Loading;
   const factory ReviewOrderState.loaded({
     required int quantity,

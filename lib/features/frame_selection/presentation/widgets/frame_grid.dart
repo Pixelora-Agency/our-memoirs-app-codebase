@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:our_memoirs_codebase/core/constants/app_colors.dart';
 import 'package:our_memoirs_codebase/core/widgets/ui/app_card.dart';
-import 'package:our_memoirs_codebase/features/frame_selection/data/frame_model_data.dart';
+import 'package:our_memoirs_codebase/features/frame_selection/data/frame_data.dart';
+import 'package:our_memoirs_codebase/features/frame_selection/models/frame_models.dart';
 
 class FrameGrid extends StatelessWidget {
   final String selectedId;

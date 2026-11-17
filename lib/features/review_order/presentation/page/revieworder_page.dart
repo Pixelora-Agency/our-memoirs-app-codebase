@@ -59,10 +59,12 @@ class ReviewOrderPage extends StatelessWidget {
         },
         builder: (context, state) {
           final currentQuantity = state.maybeWhen(
+            initial: (quantity, totalPrice) => quantity,
             loaded: (quantity, totalPrice) => quantity,
             orElse: () => cubit.quantity,
           );
           final currentTotalPrice = state.maybeWhen(
+            initial: (quantity, totalPrice) => totalPrice,
             loaded: (quantity, totalPrice) => totalPrice,
             orElse: () => cubit.totalPrice,
           );

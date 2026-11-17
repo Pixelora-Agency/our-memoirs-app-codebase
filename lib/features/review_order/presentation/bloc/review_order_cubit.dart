@@ -5,7 +5,7 @@ import 'review_order_state.dart';
 class ReviewOrderCubit extends Cubit<ReviewOrderState> {
   ReviewOrderCubit() : super(const ReviewOrderState.initial());
 
-  int pricePerItem = 0;
+  int pricePerItem = 36000;
   int quantity = 1;
 
   int get totalPrice => quantity * pricePerItem;
@@ -15,9 +15,7 @@ class ReviewOrderCubit extends Cubit<ReviewOrderState> {
 
     await Future.delayed(const Duration(seconds: 1));
 
-    pricePerItem = 36000;
-
-    emit(const ReviewOrderState.initial());
+    emit(const ReviewOrderState.initial(quantity: 1, totalPrice: 36000));
   }
 
   void incrementQuantity() {

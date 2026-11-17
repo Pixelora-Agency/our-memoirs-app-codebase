@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:our_memoirs_codebase/features/camera_session/presentation/bloc/camera_session_cubit.dart';
 import 'package:our_memoirs_codebase/features/camera_session/presentation/page/camera_session_page.dart';
-import 'package:our_memoirs_codebase/features/frame_selection/data/frame_model_data.dart';
+import 'package:our_memoirs_codebase/features/frame_selection/models/frame_models.dart';
 import 'package:our_memoirs_codebase/features/frame_selection/presentation/bloc/frame_selection_cubit.dart';
 import 'package:our_memoirs_codebase/features/frame_selection/presentation/page/frame_selection_page.dart';
 import 'package:our_memoirs_codebase/features/instruction/presentation/page/instruction_page.dart';

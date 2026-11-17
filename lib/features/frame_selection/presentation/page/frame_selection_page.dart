@@ -7,7 +7,7 @@ import 'package:our_memoirs_codebase/core/constants/app_typo.dart';
 import 'package:our_memoirs_codebase/core/widgets/tile_grid_painter.dart';
 import 'package:our_memoirs_codebase/core/widgets/ui/app_button.dart';
 
-import '../../data/frame_model_data.dart';
+import '../../data/frame_data.dart';
 import '../bloc/frame_selection_cubit.dart';
 import '../bloc/frame_selection_state.dart';
 import '../widgets/frame_grid.dart';

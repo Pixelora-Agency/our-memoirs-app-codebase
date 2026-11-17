@@ -1,6 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:our_memoirs_codebase/features/frame_selection/data/frame_model_data.dart';
+import 'package:our_memoirs_codebase/features/frame_selection/models/frame_models.dart';
 
 part 'camera_session_state.freezed.dart';
 
@@ -8,6 +8,7 @@ part 'camera_session_state.freezed.dart';
 class CameraSessionState with _$CameraSessionState {
   const factory CameraSessionState.initial({
     @Default(10) int prepareSeconds,
+    String? frameName,
     CameraController? controller,
   }) = _Initial;
   const factory CameraSessionState.loading() = _Loading;
@@ -15,17 +16,17 @@ class CameraSessionState with _$CameraSessionState {
     required CameraController controller,
     required String cameraName,
     required FrameModel frameConfig,
-    @Default(3) int slotCountdown,
+    @Default(10) int slotCountdown,
     @Default(0) int currentSlotIndex,
     required int totalSlots,
     @Default([]) List<XFile?> capturedPhotos,
     @Default(false) bool isTakingPicture,
+    @Default(0) int chanceRetake,
   }) = _Ready;
-  const factory CameraSessionState.review({
-    required CameraController controller,
+  const factory CameraSessionState.print({
     required FrameModel frameConfig,
     required List<XFile?> capturedPhotos,
-    int? selectedIndexToRetake,
-  }) = _Review;
+    @Default(false) bool mirrorImg,
+  }) = _Print;
   const factory CameraSessionState.error(String message) = _Error;
 }

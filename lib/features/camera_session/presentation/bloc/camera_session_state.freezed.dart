@@ -56,14 +56,14 @@ extension CameraSessionStatePatterns on CameraSessionState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Ready value)?  ready,TResult Function( _Review value)?  review,TResult Function( _Error value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Loading value)?  loading,TResult Function( _Ready value)?  ready,TResult Function( _Print value)?  print,TResult Function( _Error value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
 return loading(_that);case _Ready() when ready != null:
-return ready(_that);case _Review() when review != null:
-return review(_that);case _Error() when error != null:
+return ready(_that);case _Print() when print != null:
+return print(_that);case _Error() when error != null:
 return error(_that);case _:
   return orElse();
 
@@ -82,14 +82,14 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Ready value)  ready,required TResult Function( _Review value)  review,required TResult Function( _Error value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Loading value)  loading,required TResult Function( _Ready value)  ready,required TResult Function( _Print value)  print,required TResult Function( _Error value)  error,}){
 final _that = this;
 switch (_that) {
 case _Initial():
 return initial(_that);case _Loading():
 return loading(_that);case _Ready():
-return ready(_that);case _Review():
-return review(_that);case _Error():
+return ready(_that);case _Print():
+return print(_that);case _Error():
 return error(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -107,14 +107,14 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Ready value)?  ready,TResult? Function( _Review value)?  review,TResult? Function( _Error value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Loading value)?  loading,TResult? Function( _Ready value)?  ready,TResult? Function( _Print value)?  print,TResult? Function( _Error value)?  error,}){
 final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial(_that);case _Loading() when loading != null:
 return loading(_that);case _Ready() when ready != null:
-return ready(_that);case _Review() when review != null:
-return review(_that);case _Error() when error != null:
+return ready(_that);case _Print() when print != null:
+return print(_that);case _Error() when error != null:
 return error(_that);case _:
   return null;
 
@@ -132,13 +132,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int prepareSeconds,  CameraController? controller)?  initial,TResult Function()?  loading,TResult Function( CameraController controller,  String cameraName,  FrameModel frameConfig,  int slotCountdown,  int currentSlotIndex,  int totalSlots,  List<XFile?> capturedPhotos,  bool isTakingPicture)?  ready,TResult Function( CameraController controller,  FrameModel frameConfig,  List<XFile?> capturedPhotos,  int? selectedIndexToRetake)?  review,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int prepareSeconds,  String? frameName,  CameraController? controller)?  initial,TResult Function()?  loading,TResult Function( CameraController controller,  String cameraName,  FrameModel frameConfig,  int slotCountdown,  int currentSlotIndex,  int totalSlots,  List<XFile?> capturedPhotos,  bool isTakingPicture,  int chanceRetake)?  ready,TResult Function( FrameModel frameConfig,  List<XFile?> capturedPhotos,  bool mirrorImg)?  print,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial(_that.prepareSeconds,_that.controller);case _Loading() when loading != null:
+return initial(_that.prepareSeconds,_that.frameName,_that.controller);case _Loading() when loading != null:
 return loading();case _Ready() when ready != null:
-return ready(_that.controller,_that.cameraName,_that.frameConfig,_that.slotCountdown,_that.currentSlotIndex,_that.totalSlots,_that.capturedPhotos,_that.isTakingPicture);case _Review() when review != null:
-return review(_that.controller,_that.frameConfig,_that.capturedPhotos,_that.selectedIndexToRetake);case _Error() when error != null:
+return ready(_that.controller,_that.cameraName,_that.frameConfig,_that.slotCountdown,_that.currentSlotIndex,_that.totalSlots,_that.capturedPhotos,_that.isTakingPicture,_that.chanceRetake);case _Print() when print != null:
+return print(_that.frameConfig,_that.capturedPhotos,_that.mirrorImg);case _Error() when error != null:
 return error(_that.message);case _:
   return orElse();
 
@@ -157,13 +157,13 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int prepareSeconds,  CameraController? controller)  initial,required TResult Function()  loading,required TResult Function( CameraController controller,  String cameraName,  FrameModel frameConfig,  int slotCountdown,  int currentSlotIndex,  int totalSlots,  List<XFile?> capturedPhotos,  bool isTakingPicture)  ready,required TResult Function( CameraController controller,  FrameModel frameConfig,  List<XFile?> capturedPhotos,  int? selectedIndexToRetake)  review,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int prepareSeconds,  String? frameName,  CameraController? controller)  initial,required TResult Function()  loading,required TResult Function( CameraController controller,  String cameraName,  FrameModel frameConfig,  int slotCountdown,  int currentSlotIndex,  int totalSlots,  List<XFile?> capturedPhotos,  bool isTakingPicture,  int chanceRetake)  ready,required TResult Function( FrameModel frameConfig,  List<XFile?> capturedPhotos,  bool mirrorImg)  print,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
 case _Initial():
-return initial(_that.prepareSeconds,_that.controller);case _Loading():
+return initial(_that.prepareSeconds,_that.frameName,_that.controller);case _Loading():
 return loading();case _Ready():
-return ready(_that.controller,_that.cameraName,_that.frameConfig,_that.slotCountdown,_that.currentSlotIndex,_that.totalSlots,_that.capturedPhotos,_that.isTakingPicture);case _Review():
-return review(_that.controller,_that.frameConfig,_that.capturedPhotos,_that.selectedIndexToRetake);case _Error():
+return ready(_that.controller,_that.cameraName,_that.frameConfig,_that.slotCountdown,_that.currentSlotIndex,_that.totalSlots,_that.capturedPhotos,_that.isTakingPicture,_that.chanceRetake);case _Print():
+return print(_that.frameConfig,_that.capturedPhotos,_that.mirrorImg);case _Error():
 return error(_that.message);case _:
   throw StateError('Unexpected subclass');
 
@@ -181,13 +181,13 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int prepareSeconds,  CameraController? controller)?  initial,TResult? Function()?  loading,TResult? Function( CameraController controller,  String cameraName,  FrameModel frameConfig,  int slotCountdown,  int currentSlotIndex,  int totalSlots,  List<XFile?> capturedPhotos,  bool isTakingPicture)?  ready,TResult? Function( CameraController controller,  FrameModel frameConfig,  List<XFile?> capturedPhotos,  int? selectedIndexToRetake)?  review,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int prepareSeconds,  String? frameName,  CameraController? controller)?  initial,TResult? Function()?  loading,TResult? Function( CameraController controller,  String cameraName,  FrameModel frameConfig,  int slotCountdown,  int currentSlotIndex,  int totalSlots,  List<XFile?> capturedPhotos,  bool isTakingPicture,  int chanceRetake)?  ready,TResult? Function( FrameModel frameConfig,  List<XFile?> capturedPhotos,  bool mirrorImg)?  print,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
-return initial(_that.prepareSeconds,_that.controller);case _Loading() when loading != null:
+return initial(_that.prepareSeconds,_that.frameName,_that.controller);case _Loading() when loading != null:
 return loading();case _Ready() when ready != null:
-return ready(_that.controller,_that.cameraName,_that.frameConfig,_that.slotCountdown,_that.currentSlotIndex,_that.totalSlots,_that.capturedPhotos,_that.isTakingPicture);case _Review() when review != null:
-return review(_that.controller,_that.frameConfig,_that.capturedPhotos,_that.selectedIndexToRetake);case _Error() when error != null:
+return ready(_that.controller,_that.cameraName,_that.frameConfig,_that.slotCountdown,_that.currentSlotIndex,_that.totalSlots,_that.capturedPhotos,_that.isTakingPicture,_that.chanceRetake);case _Print() when print != null:
+return print(_that.frameConfig,_that.capturedPhotos,_that.mirrorImg);case _Error() when error != null:
 return error(_that.message);case _:
   return null;
 
@@ -200,10 +200,11 @@ return error(_that.message);case _:
 
 
 class _Initial implements CameraSessionState {
-  const _Initial({this.prepareSeconds = 10, this.controller});
+  const _Initial({this.prepareSeconds = 10, this.frameName, this.controller});
   
 
 @JsonKey() final  int prepareSeconds;
+ final  String? frameName;
  final  CameraController? controller;
 
 /// Create a copy of CameraSessionState
@@ -216,18 +217,18 @@ _$InitialCopyWith<_Initial> get copyWith => __$InitialCopyWithImpl<_Initial>(thi
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.prepareSeconds, prepareSeconds) || other.prepareSeconds == prepareSeconds)&&(identical(other.controller, controller) || other.controller == controller));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial&&(identical(other.prepareSeconds, prepareSeconds) || other.prepareSeconds == prepareSeconds)&&(identical(other.frameName, frameName) || other.frameName == frameName)&&(identical(other.controller, controller) || other.controller == controller));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,prepareSeconds,controller);
+    return Object.hash(runtimeType,prepareSeconds,frameName,controller);
 }
 
 @override
 String toString() {
-    return 'CameraSessionState.initial(prepareSeconds: $prepareSeconds, controller: $controller)';
+    return 'CameraSessionState.initial(prepareSeconds: $prepareSeconds, frameName: $frameName, controller: $controller)';
 }
 
 
@@ -238,7 +239,7 @@ abstract mixin class _$InitialCopyWith<$Res> implements $CameraSessionStateCopyW
   factory _$InitialCopyWith(_Initial value, $Res Function(_Initial) _then) = __$InitialCopyWithImpl;
 @useResult
 $Res call({
- int prepareSeconds, CameraController? controller
+ int prepareSeconds, String? frameName, CameraController? controller
 });
 
 
@@ -255,10 +256,11 @@ class __$InitialCopyWithImpl<$Res>
 
 /// Create a copy of CameraSessionState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? prepareSeconds = null,Object? controller = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? prepareSeconds = null,Object? frameName = freezed,Object? controller = freezed,}) {
   return _then(_Initial(
 prepareSeconds: null == prepareSeconds ? _self.prepareSeconds : prepareSeconds // ignore: cast_nullable_to_non_nullable
-as int,controller: freezed == controller ? _self.controller : controller // ignore: cast_nullable_to_non_nullable
+as int,frameName: freezed == frameName ? _self.frameName : frameName // ignore: cast_nullable_to_non_nullable
+as String?,controller: freezed == controller ? _self.controller : controller // ignore: cast_nullable_to_non_nullable
 as CameraController?,
   ));
 }
@@ -302,7 +304,7 @@ String toString() {
 
 
 class _Ready implements CameraSessionState {
-  const _Ready({required this.controller, required this.cameraName, required this.frameConfig, this.slotCountdown = 3, this.currentSlotIndex = 0, required this.totalSlots,  List<XFile?> capturedPhotos = const [], this.isTakingPicture = false}): _capturedPhotos = capturedPhotos;
+  const _Ready({required this.controller, required this.cameraName, required this.frameConfig, this.slotCountdown = 10, this.currentSlotIndex = 0, required this.totalSlots,  List<XFile?> capturedPhotos = const [], this.isTakingPicture = false, this.chanceRetake = 0}): _capturedPhotos = capturedPhotos;
   
 
  final  CameraController controller;
@@ -319,6 +321,7 @@ class _Ready implements CameraSessionState {
 }
 
 @JsonKey() final  bool isTakingPicture;
+@JsonKey() final  int chanceRetake;
 
 /// Create a copy of CameraSessionState
 /// with the given fields replaced by the non-null parameter values.
@@ -330,18 +333,18 @@ _$ReadyCopyWith<_Ready> get copyWith => __$ReadyCopyWithImpl<_Ready>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Ready&&(identical(other.controller, controller) || other.controller == controller)&&(identical(other.cameraName, cameraName) || other.cameraName == cameraName)&&(identical(other.frameConfig, frameConfig) || other.frameConfig == frameConfig)&&(identical(other.slotCountdown, slotCountdown) || other.slotCountdown == slotCountdown)&&(identical(other.currentSlotIndex, currentSlotIndex) || other.currentSlotIndex == currentSlotIndex)&&(identical(other.totalSlots, totalSlots) || other.totalSlots == totalSlots)&&const DeepCollectionEquality().equals(other.capturedPhotos, _capturedPhotos)&&(identical(other.isTakingPicture, isTakingPicture) || other.isTakingPicture == isTakingPicture));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Ready&&(identical(other.controller, controller) || other.controller == controller)&&(identical(other.cameraName, cameraName) || other.cameraName == cameraName)&&(identical(other.frameConfig, frameConfig) || other.frameConfig == frameConfig)&&(identical(other.slotCountdown, slotCountdown) || other.slotCountdown == slotCountdown)&&(identical(other.currentSlotIndex, currentSlotIndex) || other.currentSlotIndex == currentSlotIndex)&&(identical(other.totalSlots, totalSlots) || other.totalSlots == totalSlots)&&const DeepCollectionEquality().equals(other.capturedPhotos, _capturedPhotos)&&(identical(other.isTakingPicture, isTakingPicture) || other.isTakingPicture == isTakingPicture)&&(identical(other.chanceRetake, chanceRetake) || other.chanceRetake == chanceRetake));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,controller,cameraName,frameConfig,slotCountdown,currentSlotIndex,totalSlots,const DeepCollectionEquality().hash(_capturedPhotos),isTakingPicture);
+    return Object.hash(runtimeType,controller,cameraName,frameConfig,slotCountdown,currentSlotIndex,totalSlots,const DeepCollectionEquality().hash(_capturedPhotos),isTakingPicture,chanceRetake);
 }
 
 @override
 String toString() {
-    return 'CameraSessionState.ready(controller: $controller, cameraName: $cameraName, frameConfig: $frameConfig, slotCountdown: $slotCountdown, currentSlotIndex: $currentSlotIndex, totalSlots: $totalSlots, capturedPhotos: $capturedPhotos, isTakingPicture: $isTakingPicture)';
+    return 'CameraSessionState.ready(controller: $controller, cameraName: $cameraName, frameConfig: $frameConfig, slotCountdown: $slotCountdown, currentSlotIndex: $currentSlotIndex, totalSlots: $totalSlots, capturedPhotos: $capturedPhotos, isTakingPicture: $isTakingPicture, chanceRetake: $chanceRetake)';
 }
 
 
@@ -352,7 +355,7 @@ abstract mixin class _$ReadyCopyWith<$Res> implements $CameraSessionStateCopyWit
   factory _$ReadyCopyWith(_Ready value, $Res Function(_Ready) _then) = __$ReadyCopyWithImpl;
 @useResult
 $Res call({
- CameraController controller, String cameraName, FrameModel frameConfig, int slotCountdown, int currentSlotIndex, int totalSlots, List<XFile?> capturedPhotos, bool isTakingPicture
+ CameraController controller, String cameraName, FrameModel frameConfig, int slotCountdown, int currentSlotIndex, int totalSlots, List<XFile?> capturedPhotos, bool isTakingPicture, int chanceRetake
 });
 
 
@@ -369,7 +372,7 @@ class __$ReadyCopyWithImpl<$Res>
 
 /// Create a copy of CameraSessionState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? controller = null,Object? cameraName = null,Object? frameConfig = null,Object? slotCountdown = null,Object? currentSlotIndex = null,Object? totalSlots = null,Object? capturedPhotos = null,Object? isTakingPicture = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? controller = null,Object? cameraName = null,Object? frameConfig = null,Object? slotCountdown = null,Object? currentSlotIndex = null,Object? totalSlots = null,Object? capturedPhotos = null,Object? isTakingPicture = null,Object? chanceRetake = null,}) {
   return _then(_Ready(
 controller: null == controller ? _self.controller : controller // ignore: cast_nullable_to_non_nullable
 as CameraController,cameraName: null == cameraName ? _self.cameraName : cameraName // ignore: cast_nullable_to_non_nullable
@@ -379,7 +382,8 @@ as int,currentSlotIndex: null == currentSlotIndex ? _self.currentSlotIndex : cur
 as int,totalSlots: null == totalSlots ? _self.totalSlots : totalSlots // ignore: cast_nullable_to_non_nullable
 as int,capturedPhotos: null == capturedPhotos ? _self._capturedPhotos : capturedPhotos // ignore: cast_nullable_to_non_nullable
 as List<XFile?>,isTakingPicture: null == isTakingPicture ? _self.isTakingPicture : isTakingPicture // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,chanceRetake: null == chanceRetake ? _self.chanceRetake : chanceRetake // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -389,11 +393,10 @@ as bool,
 /// @nodoc
 
 
-class _Review implements CameraSessionState {
-  const _Review({required this.controller, required this.frameConfig, required  List<XFile?> capturedPhotos, this.selectedIndexToRetake}): _capturedPhotos = capturedPhotos;
+class _Print implements CameraSessionState {
+  const _Print({required this.frameConfig, required  List<XFile?> capturedPhotos, this.mirrorImg = false}): _capturedPhotos = capturedPhotos;
   
 
- final  CameraController controller;
  final  FrameModel frameConfig;
  final  List<XFile?> _capturedPhotos;
  List<XFile?> get capturedPhotos {
@@ -402,41 +405,41 @@ class _Review implements CameraSessionState {
   return EqualUnmodifiableListView(_capturedPhotos);
 }
 
- final  int? selectedIndexToRetake;
+@JsonKey() final  bool mirrorImg;
 
 /// Create a copy of CameraSessionState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$ReviewCopyWith<_Review> get copyWith => __$ReviewCopyWithImpl<_Review>(this, _$identity);
+_$PrintCopyWith<_Print> get copyWith => __$PrintCopyWithImpl<_Print>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Review&&(identical(other.controller, controller) || other.controller == controller)&&(identical(other.frameConfig, frameConfig) || other.frameConfig == frameConfig)&&const DeepCollectionEquality().equals(other.capturedPhotos, _capturedPhotos)&&(identical(other.selectedIndexToRetake, selectedIndexToRetake) || other.selectedIndexToRetake == selectedIndexToRetake));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Print&&(identical(other.frameConfig, frameConfig) || other.frameConfig == frameConfig)&&const DeepCollectionEquality().equals(other.capturedPhotos, _capturedPhotos)&&(identical(other.mirrorImg, mirrorImg) || other.mirrorImg == mirrorImg));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,controller,frameConfig,const DeepCollectionEquality().hash(_capturedPhotos),selectedIndexToRetake);
+    return Object.hash(runtimeType,frameConfig,const DeepCollectionEquality().hash(_capturedPhotos),mirrorImg);
 }
 
 @override
 String toString() {
-    return 'CameraSessionState.review(controller: $controller, frameConfig: $frameConfig, capturedPhotos: $capturedPhotos, selectedIndexToRetake: $selectedIndexToRetake)';
+    return 'CameraSessionState.print(frameConfig: $frameConfig, capturedPhotos: $capturedPhotos, mirrorImg: $mirrorImg)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$ReviewCopyWith<$Res> implements $CameraSessionStateCopyWith<$Res> {
-  factory _$ReviewCopyWith(_Review value, $Res Function(_Review) _then) = __$ReviewCopyWithImpl;
+abstract mixin class _$PrintCopyWith<$Res> implements $CameraSessionStateCopyWith<$Res> {
+  factory _$PrintCopyWith(_Print value, $Res Function(_Print) _then) = __$PrintCopyWithImpl;
 @useResult
 $Res call({
- CameraController controller, FrameModel frameConfig, List<XFile?> capturedPhotos, int? selectedIndexToRetake
+ FrameModel frameConfig, List<XFile?> capturedPhotos, bool mirrorImg
 });
 
 
@@ -444,22 +447,21 @@ $Res call({
 
 }
 /// @nodoc
-class __$ReviewCopyWithImpl<$Res>
-    implements _$ReviewCopyWith<$Res> {
-  __$ReviewCopyWithImpl(this._self, this._then);
+class __$PrintCopyWithImpl<$Res>
+    implements _$PrintCopyWith<$Res> {
+  __$PrintCopyWithImpl(this._self, this._then);
 
-  final _Review _self;
-  final $Res Function(_Review) _then;
+  final _Print _self;
+  final $Res Function(_Print) _then;
 
 /// Create a copy of CameraSessionState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? controller = null,Object? frameConfig = null,Object? capturedPhotos = null,Object? selectedIndexToRetake = freezed,}) {
-  return _then(_Review(
-controller: null == controller ? _self.controller : controller // ignore: cast_nullable_to_non_nullable
-as CameraController,frameConfig: null == frameConfig ? _self.frameConfig : frameConfig // ignore: cast_nullable_to_non_nullable
+@pragma('vm:prefer-inline') $Res call({Object? frameConfig = null,Object? capturedPhotos = null,Object? mirrorImg = null,}) {
+  return _then(_Print(
+frameConfig: null == frameConfig ? _self.frameConfig : frameConfig // ignore: cast_nullable_to_non_nullable
 as FrameModel,capturedPhotos: null == capturedPhotos ? _self._capturedPhotos : capturedPhotos // ignore: cast_nullable_to_non_nullable
-as List<XFile?>,selectedIndexToRetake: freezed == selectedIndexToRetake ? _self.selectedIndexToRetake : selectedIndexToRetake // ignore: cast_nullable_to_non_nullable
-as int?,
+as List<XFile?>,mirrorImg: null == mirrorImg ? _self.mirrorImg : mirrorImg // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

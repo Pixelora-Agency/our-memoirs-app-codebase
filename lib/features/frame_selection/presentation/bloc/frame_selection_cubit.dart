@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:our_memoirs_codebase/features/frame_selection/data/frame_model_data.dart';
+import 'package:our_memoirs_codebase/features/frame_selection/models/frame_models.dart';
 
 import 'frame_selection_state.dart';
 

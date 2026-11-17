@@ -1,35 +1,54 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:our_memoirs_codebase/core/constants/app_typo.dart';
+import 'package:our_memoirs_codebase/core/utils/format_time.dart';
+import 'package:our_memoirs_codebase/core/widgets/ui/app_button.dart';
 
 class PrepareView extends StatelessWidget {
   final int prepareSeconds;
   final CameraController? controller;
   final VoidCallback onStartPressed;
+  final String frameName;
 
   const PrepareView({
     super.key,
     required this.prepareSeconds,
+    required this.frameName,
     required this.controller,
     required this.onStartPressed,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    DateTime now = DateTime.now();
+
+    String hour = now.hour.toString().padLeft(2, '0');
+    String minutes = now.minute.toString().padLeft(2, '0');
+
+    String formattedDateNow = DateFormat('dd MMMM yyyy', 'en_US').format(now);
+    String formattedTimeNow = '$hour:$minutes';
+
     return Stack(
       fit: StackFit.expand,
       children: [
-        // 1. BACKGROUND: Live Preview Kamera (jika controller sudah siap di background)
+        Positioned.fill(child: Container(color: Colors.black)),
         if (controller != null && controller!.value.isInitialized)
-          Positioned.fill(
-            child: FittedBox(
-              fit: BoxFit.cover,
-              child: SizedBox(
-                // Pakai aspectRatio langsung agar ukurannya selalu valid dan tidak 0
-                width: controller!.value.aspectRatio > 0
-                    ? controller!.value.aspectRatio
-                    : 16 / 9,
-                height: 1.0,
-                child: CameraPreview(controller!),
+          Center(
+            child: FractionallySizedBox(
+              widthFactor: 0.9, // Mengambil 70% dari lebar layar
+              heightFactor: 1, // Mengambil 70% dari tinggi layar
+              child: ClipRRect(
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: SizedBox(
+                    width: controller!.value.aspectRatio,
+                    height: 1.0,
+                    child: CameraPreview(controller!),
+                  ),
+                ),
               ),
             ),
           )
@@ -37,14 +56,12 @@ class PrepareView extends StatelessWidget {
           Container(
             color: Colors.black,
           ), // Fallback hitam jika kamera masih loading
-        // 2. BACKDROP / OVERLAY GELAP TRANSPARAN
         Container(color: Colors.black.withValues(alpha: 0.7)),
 
-        // 3. KONTEN UTAMA (UI Teks, Timer, & Tombol)
         SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 48.0,
+              horizontal: 80.0,
               vertical: 32.0,
             ),
             child: Column(
@@ -54,37 +71,36 @@ class PrepareView extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      "Our Memoirs",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Serif',
-                        fontSize: 24,
-                        fontStyle: FontStyle.italic,
+                    Transform.translate(
+                      offset: const Offset(0, -16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Our", style: AppTypography.titlePage),
+                          Transform.translate(
+                            offset: const Offset(5, 9),
+                            child: Text(
+                              "Memoirs",
+                              style: AppTypography.titleScriptPage,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: const [
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(formattedDateNow, style: AppTypography.heading3),
                         Text(
-                          "12 September 2026",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Text(
-                          "20:30 | Take 1\nEatime Stories",
-                          textAlign: TextAlign.right,
-                          style: TextStyle(color: Colors.white70, fontSize: 12),
+                          "$formattedTimeNow | Take 1\n$frameName",
+
+                          style: AppTypography.bodyMedium,
                         ),
                       ],
                     ),
                   ],
                 ),
 
-                // Konten Tengah (Get Ready, Timer, Start Button)
                 Expanded(
                   child: Center(
                     child: Column(
@@ -94,60 +110,59 @@ class PrepareView extends StatelessWidget {
                           "Get Ready!",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 48,
-                            fontWeight: FontWeight.bold,
+                            fontSize: AppTypography.size4xl,
+                            fontWeight: AppTypography.weightBold,
+                            letterSpacing: AppTypography.trackingMedium,
+                            height: AppTypography.leadingTight,
                           ),
                         ),
-                        const SizedBox(height: 12),
                         const Text(
                           "Your session will start in",
-                          style: TextStyle(color: Colors.white70, fontSize: 16),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: AppTypography.sizeXl,
+                            fontWeight: AppTypography.weightMedium,
+                            letterSpacing: AppTypography.trackingSmall,
+                            height: AppTypography.leadingTight,
+                          ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 24),
 
-                        // Kotak Timer (00:10)
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 20,
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.4),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.white24),
+                            color: Colors.white.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(19),
                           ),
                           child: Text(
-                            "00:${prepareSeconds.toString().padLeft(2, '0')}",
+                            formatTime(prepareSeconds),
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 18,
+                              fontSize: 24,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 36),
+                        const SizedBox(height: 40),
 
-                        // Tombol Start Now
-                        SizedBox(
-                          width: 220,
-                          height: 52,
-                          child: ElevatedButton(
-                            onPressed: onStartPressed,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: Colors.black,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                              elevation: 0,
-                            ),
-                            child: const Text(
-                              "Start Now",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
+                        AppButton(
+                          width: 140,
+                          height: 50,
+                          label: "Start Now",
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 2,
+                            vertical: 8,
+                          ),
+                          textColor: theme.colorScheme.primary,
+                          backgroundColor: theme.colorScheme.onPrimary,
+                          borderRadius: 19,
+                          onTap: () => onStartPressed(),
+                          textStyle: TextStyle(
+                            fontWeight: AppTypography.weightBold,
+                            letterSpacing: AppTypography.trackingMedium,
                           ),
                         ),
                       ],

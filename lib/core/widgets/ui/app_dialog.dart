@@ -14,6 +14,7 @@ class AppDialog extends StatefulWidget {
   final String? canceText;
   final VoidCallback? onConfirm;
   final VoidCallback? onCancel;
+  final VoidCallback? onError;
 
   final Widget? footer;
 
@@ -27,6 +28,7 @@ class AppDialog extends StatefulWidget {
     this.canceText,
     this.onConfirm,
     this.onCancel,
+    this.onError,
     this.footer,
   });
 
@@ -38,8 +40,10 @@ class AppDialog extends StatefulWidget {
     required DialogType type,
     String? confirmText,
     String? cancelText,
+
     VoidCallback? onConfirm,
     VoidCallback? onCancel,
+    VoidCallback? onError,
     Widget? footer,
     bool barrierDismissible = true,
   }) {
@@ -55,6 +59,7 @@ class AppDialog extends StatefulWidget {
         canceText: cancelText,
         onConfirm: onConfirm,
         onCancel: onCancel,
+        onError: onError,
         footer: footer,
       ),
     );
@@ -174,7 +179,13 @@ class _AppDialogState extends State<AppDialog> {
                   AppButton(
                     label: "Ok",
                     borderRadius: 100,
-                    onTap: () => Navigator.pop(context),
+                    onTap: () {
+                      if (widget.onError != null) {
+                        widget.onError!();
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    },
                   ),
                 ],
               ],
