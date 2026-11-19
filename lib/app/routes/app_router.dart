@@ -10,6 +10,8 @@ import 'package:our_memoirs_codebase/features/instruction/presentation/page/inst
 import 'package:our_memoirs_codebase/features/onboarding/presentation/page/onboarding_page.dart';
 import 'package:our_memoirs_codebase/features/payment/presentation/bloc/payment_cubit.dart';
 import 'package:our_memoirs_codebase/features/payment/presentation/page/payment_page.dart';
+import 'package:our_memoirs_codebase/features/result/presentation/bloc/result_cubit.dart';
+import 'package:our_memoirs_codebase/features/result/presentation/page/result_page.dart';
 import 'package:our_memoirs_codebase/features/review_order/presentation/bloc/review_order_cubit.dart';
 import 'package:our_memoirs_codebase/features/review_order/presentation/page/revieworder_page.dart';
 
@@ -100,6 +102,19 @@ final GoRouter appRouter = GoRouter(
           child: BlocProvider(
             create: (context) => CameraSessionCubit()..initialPrepare(frame),
             child: const CameraSessionPage(),
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.result,
+      pageBuilder: (context, state) {
+        final String imagePaths = state.extra as String;
+        return fadePage(
+          state: state,
+          child: BlocProvider(
+            create: (context) => ResultCubit()..initialRender(imagePaths),
+            child: const ResultPage(),
           ),
         );
       },

@@ -65,7 +65,7 @@ class _TestFrameScreenState extends State<TestFrameScreen> {
                     chanceRetake: 1,
                     capturedImagePaths: dummyPhotos, // Memasukkan dummy foto
                     onSlotTapped: (index) {
-                      print("Slot ke-$index diklik untuk diganti!");
+                      debugPrint("Slot ke-$index diklik untuk diganti!");
                     },
                   ),
                 ),

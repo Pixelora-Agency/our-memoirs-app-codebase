@@ -33,9 +33,15 @@ class ReviewOrderPage extends StatelessWidget {
             loading: () {
               AppDialog.show(
                 context,
-                title: "Processing Order",
-                type: DialogType.loading,
                 barrierDismissible: false,
+                icon: Image.asset(
+                  'assets/images/placeholder/loading.gif',
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.cover,
+                ),
+                message: "Proccesing your order",
+                type: DialogType.loading,
               );
             },
             success: (qrCodeData, idOrder) {

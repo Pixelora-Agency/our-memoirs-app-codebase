@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:our_memoirs_codebase/core/utils/crop_photo_ratio.dart';
 import 'package:our_memoirs_codebase/core/utils/photo_path.dart';
@@ -16,6 +17,7 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
   FrameModel? currentFrame;
 
   bool _isInitializing = false;
+  final AudioPlayer? audioPlayer = AudioPlayer();
 
   CameraSessionCubit() : super(const CameraSessionState.initial());
 
@@ -83,7 +85,7 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
 
       startPrepareCountdown();
     } catch (e) {
-      print("Error init camera: $e");
+      debugPrint("Error init camera: $e");
       if (controller != null) {
         await controller!.dispose();
         controller = null;
@@ -163,14 +165,13 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
     if (controller == null || !controller!.value.isInitialized) return;
 
     final currentState = state.maybeMap(ready: (s) => s, orElse: () => null);
-    final AudioPlayer audioPlayer = AudioPlayer();
 
     if (currentState == null || currentState.isTakingPicture) return;
 
     emit(currentState.copyWith(isTakingPicture: true));
 
     try {
-      await audioPlayer.play(AssetSource('audio/camera-shutter.mp3'));
+      await audioPlayer!.play(AssetSource('audio/camera-shutter.mp3'));
       final XFile rawImage = await controller!.takePicture();
 
       if (isClosed) return;
@@ -215,13 +216,13 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
                 chanceRetake: s.chanceRetake == 1 ? 2 : 0,
               ),
             );
-            print("🎉 Sesi foto selesai! Semua slot sudah terisi.");
+            debugPrint("🎉 Sesi foto selesai! Semua slot sudah terisi.");
           }
         },
         orElse: () {},
       );
     } catch (e) {
-      print("❌ Error capturing image: $e");
+      debugPrint("❌ Error capturing image: $e");
 
       if (isClosed) return;
 
@@ -259,13 +260,22 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
         cameraSessionTimer?.cancel();
         currentState.controller.dispose();
 
-        emit(
-          CameraSessionState.print(
-            frameConfig: currentState.frameConfig,
-            capturedPhotos: currentState.capturedPhotos,
-            mirrorImg: false,
-          ),
-        );
+        if (audioPlayer != null) {
+          try {
+            audioPlayer!.stop();
+            audioPlayer!.dispose();
+          } catch (e) {
+            debugPrint("Audio Player already disposed or not ready");
+          }
+
+          emit(
+            CameraSessionState.print(
+              frameConfig: currentState.frameConfig,
+              capturedPhotos: currentState.capturedPhotos,
+              mirrorImg: false,
+            ),
+          );
+        }
       },
       orElse: () {},
     );
@@ -276,6 +286,7 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
       print: (printState) {
         emit(printState.copyWith(mirrorImg: !printState.mirrorImg));
       },
+
       orElse: () {},
     );
   }
@@ -285,6 +296,7 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
     controller?.dispose();
     prepareTimer?.cancel();
     cameraSessionTimer?.cancel();
+    audioPlayer!.dispose();
     return super.close();
   }
 }

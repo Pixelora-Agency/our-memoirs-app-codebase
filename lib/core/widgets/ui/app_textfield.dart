@@ -9,6 +9,7 @@ class AppTextfield extends StatelessWidget {
   final String hintText;
   final double borderRadius;
   final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry contentPadding;
   final Widget? prefixWidget;
   final Widget? suffixWidget;
   final Color borderColor;
@@ -18,6 +19,9 @@ class AppTextfield extends StatelessWidget {
   final bool readOnly;
   final double? width;
   final double? height;
+  final TextStyle? style;
+  final TextStyle? hintStyle;
+  final TextAlign? align;
 
   const AppTextfield({
     super.key,
@@ -34,6 +38,10 @@ class AppTextfield extends StatelessWidget {
     this.readOnly = true,
     this.width = double.infinity,
     this.height,
+    this.style,
+    this.hintStyle,
+    this.contentPadding = const EdgeInsets.symmetric(vertical: 12),
+    this.align,
   });
 
   @override
@@ -49,7 +57,7 @@ class AppTextfield extends StatelessWidget {
       ),
       child: TextField(
         controller: controller,
-        textAlign: TextAlign.center,
+        textAlign: align ?? TextAlign.center,
         readOnly: readOnly,
         onSubmitted: onSubmitted,
         onTap: () {
@@ -61,12 +69,16 @@ class AppTextfield extends StatelessWidget {
           }
           if (onTap != null) onTap!();
         },
-        style: AppTypography.titleMedium.copyWith(color: AppColors.primary700),
+        style:
+            style ??
+            AppTypography.titleMedium.copyWith(color: AppColors.primary700),
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: AppTypography.titleMedium.copyWith(
-            color: Colors.black.withValues(alpha: 0.24),
-          ),
+          hintStyle:
+              hintStyle ??
+              AppTypography.titleMedium.copyWith(
+                color: Colors.black.withValues(alpha: 0.24),
+              ),
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
@@ -82,7 +94,7 @@ class AppTextfield extends StatelessWidget {
             minHeight: 0,
           ),
 
-          contentPadding: const EdgeInsets.symmetric(vertical: 12),
+          contentPadding: contentPadding,
         ),
       ),
     );

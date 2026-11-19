@@ -171,7 +171,9 @@ class CameraSessionView extends StatelessWidget {
                                                   BorderRadius.circular(24),
                                             ),
                                             child: Text(
-                                              formatTime(slotCountdown),
+                                              slotCountdown == 1
+                                                  ? "Cheese!"
+                                                  : formatTime(slotCountdown),
                                               textAlign: TextAlign.center,
                                               style: AppTypography.titleMedium,
                                             ),

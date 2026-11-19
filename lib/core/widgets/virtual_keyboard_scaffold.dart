@@ -30,21 +30,11 @@ class VirtualKeyboardScaffold extends StatelessWidget {
 
             return Stack(
               children: [
-                // 1. BACKGROUND & BODY DENGAN ANIMASI PADDING YANG MULUS
-                // Background gradasi tetap full (Positioned.fill), tapi padding bawahnya beranimasi halus
+                // 1. BODY TETAP DIAM (TANPA ANIMATED PADDING)
                 Positioned.fill(
                   child: AbsorbPointer(
                     absorbing: isKeyboardVisible,
-                    child: AnimatedPadding(
-                      duration: const Duration(
-                        milliseconds: 220,
-                      ), // Kecepatan animasi
-                      curve: Curves.easeOutCubic, // Efek pergerakan agar terasa soft/natural
-                      padding: EdgeInsets.only(
-                        bottom: isKeyboardVisible ? 260 : 0,
-                      ),
-                      child: body,
-                    ),
+                    child: body,
                   ),
                 ),
 
@@ -60,7 +50,7 @@ class VirtualKeyboardScaffold extends StatelessWidget {
                     ),
                   ),
 
-                // 3. KEYBOARD VIRTUAL DENGAN SLIDE TRANSITION (MELUNCUR DARI / KE BAWAH)
+                // 3. KEYBOARD DI LAYER PALING ATAS (SEPERTI Z-INDEX TERTINGGI)
                 Positioned(
                   left: 0,
                   right: 0,
@@ -71,11 +61,8 @@ class VirtualKeyboardScaffold extends StatelessWidget {
                       return SlideTransition(
                         position:
                             Tween<Offset>(
-                              begin: const Offset(
-                                0,
-                                1,
-                              ), // Mulai dari luar layar bawah
-                              end: Offset.zero, // Berhenti di posisi normalnya
+                              begin: const Offset(0, 1),
+                              end: Offset.zero,
                             ).animate(
                               CurvedAnimation(
                                 parent: animation,

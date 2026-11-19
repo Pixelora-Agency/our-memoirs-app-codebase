@@ -33,65 +33,75 @@ class CameraSessionPage extends StatelessWidget {
           );
         },
         builder: (context, state) {
-          return state.maybeWhen(
-            initial: (prepareSeconds, frameName, controller) {
-              if (controller == null || !controller.value.isInitialized) {
-                return const Center(
-                  child: CircularProgressIndicator(color: Colors.white),
-                );
-              }
-
-              return PrepareView(
-                prepareSeconds: prepareSeconds,
-                frameName: frameName!,
-                controller: controller,
-                onStartPressed: () {
-                  context.read<CameraSessionCubit>().skipAndStart();
-                },
-              );
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 400),
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return FadeTransition(opacity: animation, child: child);
             },
-            ready:
-                (
-                  controller,
-                  cameraName,
-                  frameConfig,
-                  slotCountdown,
-                  currentSlotIndex,
-                  totalSlots,
-                  capturedPhotos,
-                  isTakingPicture,
-                  chanceRetake,
-                ) => CameraSessionView(
+            child: state.maybeWhen(
+              initial: (prepareSeconds, frameName, controller) {
+                if (controller == null || !controller.value.isInitialized) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  );
+                }
+
+                return PrepareView(
+                  key: const ValueKey('prepare_view'),
+                  prepareSeconds: prepareSeconds,
+                  frameName: frameName!,
                   controller: controller,
-                  frameConfig: frameConfig,
-                  currentSlotIndex: currentSlotIndex,
-                  totalSlots: totalSlots,
-                  slotCountdown: slotCountdown,
-                  capturedPhotos: capturedPhotos,
-                  isTakingPicture: isTakingPicture,
-                  chanceRetake: chanceRetake,
-                  onCapturePressed: () {
-                    context
-                        .read<CameraSessionCubit>()
-                        .takePictureForCurrentSlot();
+                  onStartPressed: () {
+                    context.read<CameraSessionCubit>().skipAndStart();
                   },
-                  onSlotTapped: (index) {
-                    context.read<CameraSessionCubit>().retakePhotoAt(index);
-                  },
-                  onPrintPreview: () {
-                    context.read<CameraSessionCubit>().gotPrintPreview();
-                  },
-                ),
-            print: (frameConfig, capturedPhotos, mirrorImg) => PreviewView(
-              frame: frameConfig,
-              capturedPhotos: capturedPhotos,
-              isMirrored: mirrorImg,
-              onMirrorPressed: () {
-                context.read<CameraSessionCubit>().toggleMirrorImage();
+                );
               },
-            ),
-            orElse: () => const Center(
-              child: CircularProgressIndicator(color: Colors.white),
+              ready:
+                  (
+                    controller,
+                    cameraName,
+                    frameConfig,
+                    slotCountdown,
+                    currentSlotIndex,
+                    totalSlots,
+                    capturedPhotos,
+                    isTakingPicture,
+                    chanceRetake,
+                  ) => CameraSessionView(
+                    key: const ValueKey('camera_view'),
+                    controller: controller,
+                    frameConfig: frameConfig,
+                    currentSlotIndex: currentSlotIndex,
+                    totalSlots: totalSlots,
+                    slotCountdown: slotCountdown,
+                    capturedPhotos: capturedPhotos,
+                    isTakingPicture: isTakingPicture,
+                    chanceRetake: chanceRetake,
+                    onCapturePressed: () {
+                      context
+                          .read<CameraSessionCubit>()
+                          .takePictureForCurrentSlot();
+                    },
+                    onSlotTapped: (index) {
+                      context.read<CameraSessionCubit>().retakePhotoAt(index);
+                    },
+                    onPrintPreview: () {
+                      context.read<CameraSessionCubit>().gotPrintPreview();
+                    },
+                  ),
+              print: (frameConfig, capturedPhotos, mirrorImg) => PreviewView(
+                key: const ValueKey('preview_view'),
+                frame: frameConfig,
+                capturedPhotos: capturedPhotos,
+                isMirrored: mirrorImg,
+                onMirrorPressed: () {
+                  context.read<CameraSessionCubit>().toggleMirrorImage();
+                },
+              ),
+              orElse: () => const Center(
+                key: ValueKey('loading_default'),
+                child: CircularProgressIndicator(color: Colors.white),
+              ),
             ),
           );
         },

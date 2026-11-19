@@ -1,17 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:our_memoirs_codebase/core/constants/app_colors.dart';
 import 'package:our_memoirs_codebase/core/constants/app_typo.dart';
 import 'package:our_memoirs_codebase/core/widgets/ui/app_button.dart';
 
 enum DialogType { loading, success, error, confirm }
 
+class DialogSubHeader {
+  final Widget icon;
+  final String title;
+  final String subTitle;
+
+  const DialogSubHeader({
+    required this.icon,
+    required this.title,
+    required this.subTitle,
+  });
+}
+
 class AppDialog extends StatefulWidget {
   final Widget? icon;
-  final String title;
+  final String? title;
   final String? message;
   final DialogType type;
 
   final String? confirmText;
   final String? canceText;
+  final DialogSubHeader? subHeader;
   final VoidCallback? onConfirm;
   final VoidCallback? onCancel;
   final VoidCallback? onError;
@@ -21,9 +35,10 @@ class AppDialog extends StatefulWidget {
   const AppDialog({
     super.key,
     this.icon,
-    required this.title,
+    this.title,
     this.message,
     required this.type,
+    this.subHeader,
     this.confirmText,
     this.canceText,
     this.onConfirm,
@@ -35,11 +50,12 @@ class AppDialog extends StatefulWidget {
   static void show(
     BuildContext context, {
     Widget? icon,
-    required String title,
+    String? title,
     String? message,
     required DialogType type,
     String? confirmText,
     String? cancelText,
+    DialogSubHeader? subHeader,
 
     VoidCallback? onConfirm,
     VoidCallback? onCancel,
@@ -54,6 +70,7 @@ class AppDialog extends StatefulWidget {
         icon: icon,
         title: title,
         message: message,
+        subHeader: subHeader,
         type: type,
         confirmText: confirmText,
         canceText: cancelText,
@@ -78,25 +95,59 @@ class _AppDialogState extends State<AppDialog> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(36)),
       backgroundColor: Colors.white,
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 348),
+        constraints: const BoxConstraints(maxWidth: 290),
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (widget.type == DialogType.loading) ...[
-                Padding(
-                  padding: const EdgeInsets.all(36),
-                  child: SizedBox(
-                    width: 48,
-                    height: 48,
-                    child: CircularProgressIndicator(
-                      color: theme.colorScheme.primary,
-                      strokeWidth: 4,
+              if (widget.subHeader != null) ...[
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        widget.subHeader!.icon,
+                        const SizedBox(width: 8),
+
+                        Text(
+                          widget.subHeader!.title,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: AppTypography.weightMedium,
+                            color: AppColors.primary700,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
+                    const SizedBox(height: 6),
+                    Text(
+                      widget.subHeader!.subTitle,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontWeight: AppTypography.weightRegular,
+                        color: AppColors.primary700,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 15),
+              ],
+              if (widget.type == DialogType.loading) ...[
+                widget.icon != null
+                    ? widget.icon!
+                    : Padding(
+                        padding: const EdgeInsets.all(36),
+                        child: SizedBox(
+                          width: 48,
+                          height: 48,
+                          child: CircularProgressIndicator(
+                            color: theme.colorScheme.primary,
+                            strokeWidth: 4,
+                          ),
+                        ),
+                      ),
               ] else if (widget.icon != null) ...[
                 if (widget.type == DialogType.confirm) ...[
                   Container(
@@ -108,31 +159,28 @@ class _AppDialogState extends State<AppDialog> {
                     child: widget.icon,
                   ),
                 ] else ...[
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    child: widget.icon,
-                  ),
+                  widget.icon!,
                 ],
-                const SizedBox(height: 16),
               ],
-              Text(
-                widget.title,
-                style: TextStyle(
-                  color: theme.colorScheme.primary,
-                  fontSize: AppTypography.sizeXl,
-                  fontWeight: AppTypography.weightMedium,
-                  height: AppTypography.leadingTight,
-                  letterSpacing: AppTypography.trackingSmall,
+              if (widget.title != null) ...[
+                Text(
+                  widget.title ?? '',
+                  style: TextStyle(
+                    color: theme.colorScheme.primary,
+                    fontSize: AppTypography.sizeXl,
+                    fontWeight: AppTypography.weightMedium,
+                    height: AppTypography.leadingTight,
+                    letterSpacing: AppTypography.trackingSmall,
+                  ),
                 ),
-              ),
+              ],
               if (widget.message != null) ...[
-                const SizedBox(height: 12),
                 Text(
                   widget.message ?? "",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: theme.colorScheme.primary,
-                    fontSize: AppTypography.sizeLg,
+                    fontSize: 16,
                     fontWeight: AppTypography.weightMedium,
                     height: AppTypography.leadingTight,
                     letterSpacing: AppTypography.trackingSmall,
@@ -140,7 +188,6 @@ class _AppDialogState extends State<AppDialog> {
                 ),
               ],
               if (widget.footer != null) ...[
-                const SizedBox(height: 24),
                 widget.footer!,
               ] else ...[
                 if (widget.type == DialogType.confirm) ...[
@@ -150,13 +197,20 @@ class _AppDialogState extends State<AppDialog> {
                       Expanded(
                         child: AppButton(
                           width: 100,
-                          height: 55,
+                          height: 45,
                           label: widget.canceText,
                           backgroundColor: theme.colorScheme.primary.withValues(
                             alpha: 0.1,
                           ),
                           textColor: theme.colorScheme.primary,
                           borderRadius: 100,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 2,
+                            horizontal: 4,
+                          ),
+                          textStyle: AppTypography.bodyMedium.copyWith(
+                            color: AppColors.primary700,
+                          ),
                           onTap:
                               widget.onCancel ?? () => Navigator.pop(context),
                         ),
@@ -165,10 +219,15 @@ class _AppDialogState extends State<AppDialog> {
                       Expanded(
                         child: AppButton(
                           width: 145,
-                          height: 55,
+                          height: 45,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 2,
+                            horizontal: 4,
+                          ),
                           label: widget.confirmText,
                           borderRadius: 100,
                           onTap: widget.onConfirm!,
+                          textStyle: AppTypography.bodyMedium,
                         ),
                       ),
                     ],

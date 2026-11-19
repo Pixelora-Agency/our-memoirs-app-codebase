@@ -116,17 +116,19 @@ class _AppButtonState extends State<AppButton> {
                   widget.prefixIcon!,
                   const SizedBox(width: 8),
                 ],
-                Flexible(
-                  child: widget.label is Widget
-                      ? widget.label
-                      : Text(
-                          widget.label.toString(),
-                          style: AppTypography.titleMedium
-                              .copyWith(color: txtColor)
-                              .merge(widget.textStyle),
-                          textAlign: TextAlign.center,
-                        ),
-                ),
+                if (widget.label != '') ...[
+                  Flexible(
+                    child: widget.label is Widget
+                        ? widget.label
+                        : Text(
+                            widget.label.toString(),
+                            style: AppTypography.titleMedium
+                                .copyWith(color: txtColor)
+                                .merge(widget.textStyle),
+                            textAlign: TextAlign.center,
+                          ),
+                  ),
+                ],
                 if (widget.suffixIcon != null) ...[
                   const SizedBox(width: 8),
                   widget.suffixIcon!,

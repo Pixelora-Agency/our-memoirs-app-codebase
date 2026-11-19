@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:image/image.dart' as img;
 
@@ -22,10 +23,18 @@ img.Image _trimBlackBorder(img.Image src, {int threshold = 20}) {
   }
 
   int top = 0, bottom = src.height - 1, left = 0, right = src.width - 1;
-  while (top < bottom && rowIsBorder(top)) top++;
-  while (bottom > top && rowIsBorder(bottom)) bottom--;
-  while (left < right && colIsBorder(left)) left++;
-  while (right > left && colIsBorder(right)) right--;
+  while (top < bottom && rowIsBorder(top)) {
+    top++;
+  }
+  while (bottom > top && rowIsBorder(bottom)) {
+    bottom--;
+  }
+  while (left < right && colIsBorder(left)) {
+    left++;
+  }
+  while (right > left && colIsBorder(right)) {
+    right--;
+  }
 
   final newW = right - left + 1;
   final newH = bottom - top + 1;
@@ -45,7 +54,7 @@ Future<void> cropToAspectRatio(String path, double targetRatio) async {
   final bytes = await File(path).readAsBytes();
   var original = img.decodeImage(bytes);
   if (original == null) {
-    print('⚠️ decodeImage gagal, crop dilewati');
+    debugPrint('⚠️ decodeImage gagal, crop dilewati');
     return;
   }
 
@@ -75,5 +84,5 @@ Future<void> cropToAspectRatio(String path, double targetRatio) async {
   await File(path).writeAsBytes(img.encodeJpg(cropped, quality: 95));
   await FileImage(File(path)).evict();
 
-  print('crop: ${original.width}x${original.height} -> ${cropW}x$cropH');
+  debugPrint('crop: ${original.width}x${original.height} -> ${cropW}x$cropH');
 }
