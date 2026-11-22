@@ -5,10 +5,40 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PrinterService {
+  static const String _printerKey = 'selected_printer_name';
+
   static Future<String?> printPhotoboxImage(Uint8List imageBytes) async {
     try {
+      final printers = await Printing.listPrinters();
+      if (printers.isEmpty) {
+        throw Exception("Printer not found or no printer connected.");
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      final savedPrinterName = prefs.getString(_printerKey)?.trim();
+
+      if (savedPrinterName == null || savedPrinterName.isEmpty) {
+        throw Exception("No printer selected.");
+      }
+
+      Printer? targetPrinter;
+      for (final printer in printers) {
+        if (printer.name == savedPrinterName ||
+            printer.name.toLowerCase().contains(
+              savedPrinterName.toLowerCase(),
+            )) {
+          targetPrinter = printer;
+          break;
+        }
+      }
+
+      if (targetPrinter == null) {
+        throw Exception("Printer not found.");
+      }
+
       final Directory tempDir = await getTemporaryDirectory();
       final String filePath =
           '${tempDir.path}/photobox_${DateTime.now().millisecondsSinceEpoch}.png';
@@ -19,6 +49,7 @@ class PrinterService {
       final pdf = pw.Document();
       final image = pw.MemoryImage(await imageFile.readAsBytes());
 
+      // 4R (4 x 6 inch) = 288 x 432 pt
       pdf.addPage(
         pw.Page(
           pageFormat: const PdfPageFormat(288, 432, marginAll: 0),
@@ -30,31 +61,11 @@ class PrinterService {
 
       final Uint8List pdfBytes = await pdf.save();
 
-      final printers = await Printing.listPrinters();
-
-      Printer? targetPrinter;
-
-      if (printers.isNotEmpty) {
-        try {
-          targetPrinter = printers.firstWhere(
-            (printer) => printer.name.toLowerCase().contains('l8050'),
-          );
-        } catch (_) {
-          targetPrinter = printers.first;
-        }
-      }
-
-      if (targetPrinter != null) {
-        await Printing.directPrintPdf(
-          printer: targetPrinter,
-          onLayout: (PdfPageFormat format) async => pdfBytes,
-          name: 'Ourmemoirs_photobox_print',
-        );
-      } else {
-        throw Exception(
-          "Printer tidak ditemukan atau tidak ada printer terhubung!",
-        );
-      }
+      await Printing.directPrintPdf(
+        printer: targetPrinter,
+        onLayout: (PdfPageFormat format) async => pdfBytes,
+        name: 'Ourmemoirs_photobox_print',
+      );
 
       return filePath;
     } catch (e) {

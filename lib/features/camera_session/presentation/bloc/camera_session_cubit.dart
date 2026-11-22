@@ -7,22 +7,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:our_memoirs_codebase/core/utils/crop_photo_ratio.dart';
 import 'package:our_memoirs_codebase/core/utils/photo_path.dart';
 import 'package:our_memoirs_codebase/features/frame_selection/models/frame_models.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'camera_session_state.dart';
 
 class CameraSessionCubit extends Cubit<CameraSessionState> {
+  static const String _cameraKey = 'selected_camera_name';
+
   CameraController? controller;
+
   Timer? prepareTimer;
+
   Timer? cameraSessionTimer;
+
   FrameModel? currentFrame;
 
   bool _isInitializing = false;
+
   final AudioPlayer? audioPlayer = AudioPlayer();
 
   CameraSessionCubit() : super(const CameraSessionState.initial());
 
   void initialPrepare(FrameModel frame) async {
     if (_isInitializing) return;
+
     currentFrame = frame;
 
     emit(const CameraSessionState.loading());
@@ -31,20 +39,33 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
   }
 
   // Future<void> printAvailableCameras() async {
-  //   try {
-  //     final cameras = await availableCameras();
-  //     print("========================================");
-  //     print("=== JUMLAH KAMERA TERDETEKSI: ${cameras.length} ===");
 
-  //     for (int i = 0; i < cameras.length; i++) {
-  //       print("Kamera Index [$i]:");
-  //       print(" - Name (ID): ${cameras[i].name}");
-  //       print(" - Lens Direction: ${cameras[i].lensDirection}");
-  //     }
-  //     print("========================================");
-  //   } catch (e) {
-  //     print("Error getting cameras: $e");
-  //   }
+  // try {
+
+  // final cameras = await availableCameras();
+
+  // print("========================================");
+
+  // print("=== JUMLAH KAMERA TERDETEKSI: ${cameras.length} ===");
+
+  // for (int i = 0; i < cameras.length; i++) {
+
+  // print("Kamera Index [$i]:");
+
+  // print(" - Name (ID): ${cameras[i].name}");
+
+  // print(" - Lens Direction: ${cameras[i].lensDirection}");
+
+  // }
+
+  // print("========================================");
+
+  // } catch (e) {
+
+  // print("Error getting cameras: $e");
+
+  // }
+
   // }
 
   Future<void> initCameraOnly() async {
@@ -55,21 +76,33 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
         await controller!.dispose();
         controller = null;
       }
+
+      final prefs = await SharedPreferences.getInstance();
+      final savedCameraName = prefs.getString(_cameraKey);
+
       final cameras = await availableCameras();
-      if (cameras.isEmpty) {
+      if (cameras.isEmpty ||
+          savedCameraName == null ||
+          savedCameraName.isEmpty) {
         emit(const CameraSessionState.error("Camera not found"));
         return;
       }
 
-      final selectedCamera = cameras.firstWhere((cam) {
-        final name = cam.name.toLowerCase();
-        return name.contains('eos') ||
-            name.contains('canon') ||
-            name.contains('usb video') ||
-            name.contains('capture');
-      }, orElse: () => cameras.length > 1 ? cameras.last : cameras.first);
+      CameraDescription? matchedCamera;
+      for (final cam in cameras) {
+        if (cam.name == savedCameraName) {
+          matchedCamera = cam;
+          break;
+        }
+      }
+
+      if (matchedCamera == null) {
+        emit(const CameraSessionState.error("Camera not found"));
+        return;
+      }
+
       controller = CameraController(
-        selectedCamera,
+        matchedCamera,
         ResolutionPreset.medium,
         enableAudio: false,
       );
@@ -98,22 +131,29 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
 
   void startPrepareCountdown() {
     int seconds = 10;
+
     prepareTimer?.cancel();
 
     prepareTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (seconds > 0) {
         seconds--;
+
         state.maybeMap(
           initial: (s) => emit(s.copyWith(prepareSeconds: seconds)),
+
           orElse: () {},
         );
       } else {
         timer.cancel();
+
         emit(
           CameraSessionState.ready(
             controller: controller!,
+
             cameraName: controller?.description.name ?? 'External Camera',
+
             frameConfig: currentFrame!,
+
             totalSlots: currentFrame!.slotCount,
           ),
         );
@@ -125,11 +165,15 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
 
   void skipAndStart() {
     prepareTimer?.cancel();
+
     emit(
       CameraSessionState.ready(
         controller: controller!,
+
         cameraName: controller?.description.name ?? 'External Camera',
+
         frameConfig: currentFrame!,
+
         totalSlots: currentFrame!.slotCount,
       ),
     );
@@ -143,15 +187,19 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
     state.maybeMap(
       ready: (currentState) {
         int countdown = 10;
+
         emit(currentState.copyWith(slotCountdown: countdown));
+
         cameraSessionTimer = Timer.periodic(const Duration(seconds: 1), (
           timer,
         ) async {
           if (countdown > 1) {
             countdown--;
+
             emit(currentState.copyWith(slotCountdown: countdown));
           } else {
             timer.cancel();
+
             await takePictureForCurrentSlot();
           }
         });
@@ -172,17 +220,21 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
 
     try {
       await audioPlayer!.play(AssetSource('audio/camera-shutter.mp3'));
+
       final XFile rawImage = await controller!.takePicture();
 
       if (isClosed) return;
 
       final String savePath = await getCachePhotoPath();
+
       await rawImage.saveTo(savePath);
 
       final slot = currentState
           .frameConfig
           .photoPositions[currentState.currentSlotIndex];
+
       final slotRatio = slot.width / slot.height;
+
       await cropToAspectRatio(savePath, slotRatio);
 
       final updatePhotos = List<XFile?>.from(currentState.capturedPhotos);
@@ -201,8 +253,11 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
             emit(
               s.copyWith(
                 capturedPhotos: updatePhotos,
+
                 currentSlotIndex: nextIndex,
+
                 isTakingPicture: false,
+
                 slotCountdown: 10,
               ),
             );
@@ -212,13 +267,17 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
             emit(
               s.copyWith(
                 capturedPhotos: updatePhotos,
+
                 isTakingPicture: false,
+
                 chanceRetake: s.chanceRetake == 1 ? 2 : 0,
               ),
             );
-            debugPrint("🎉 Sesi foto selesai! Semua slot sudah terisi.");
+
+            debugPrint("🎉 Done, to fill the frame");
           }
         },
+
         orElse: () {},
       );
     } catch (e) {
@@ -229,8 +288,10 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
       state.maybeMap(
         ready: (s) {
           emit(s.copyWith(isTakingPicture: false));
+
           startSlotCountdown();
         },
+
         orElse: () {},
       );
     }
@@ -240,16 +301,22 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
     state.maybeMap(
       ready: (currentState) {
         if (currentState.chanceRetake >= 2) return;
+
         cameraSessionTimer?.cancel();
+
         emit(
           currentState.copyWith(
             currentSlotIndex: index,
+
             slotCountdown: 10,
+
             chanceRetake: 1,
           ),
         );
+
         startSlotCountdown();
       },
+
       orElse: () {},
     );
   }
@@ -258,11 +325,13 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
     state.maybeMap(
       ready: (currentState) {
         cameraSessionTimer?.cancel();
+
         currentState.controller.dispose();
 
         if (audioPlayer != null) {
           try {
             audioPlayer!.stop();
+
             audioPlayer!.dispose();
           } catch (e) {
             debugPrint("Audio Player already disposed or not ready");
@@ -271,12 +340,15 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
           emit(
             CameraSessionState.print(
               frameConfig: currentState.frameConfig,
+
               capturedPhotos: currentState.capturedPhotos,
+
               mirrorImg: false,
             ),
           );
         }
       },
+
       orElse: () {},
     );
   }
@@ -294,9 +366,13 @@ class CameraSessionCubit extends Cubit<CameraSessionState> {
   @override
   Future<void> close() {
     controller?.dispose();
+
     prepareTimer?.cancel();
+
     cameraSessionTimer?.cancel();
+
     audioPlayer!.dispose();
+
     return super.close();
   }
 }

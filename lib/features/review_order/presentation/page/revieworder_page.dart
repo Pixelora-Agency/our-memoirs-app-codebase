@@ -16,14 +16,38 @@ import 'package:our_memoirs_codebase/features/review_order/presentation/bloc/rev
 
 import '../bloc/review_order_cubit.dart';
 
-class ReviewOrderPage extends StatelessWidget {
+class ReviewOrderPage extends StatefulWidget {
   const ReviewOrderPage({super.key});
+
+  @override
+  State<ReviewOrderPage> createState() => _ReviewOrderPageState();
+}
+
+class _ReviewOrderPageState extends State<ReviewOrderPage> {
+  final TextEditingController voucherController = TextEditingController();
+  String _lastVoucherText = '';
+
+  @override
+  void initState() {
+    super.initState();
+    voucherController.addListener(() {
+      final text = voucherController.text;
+      if (text == _lastVoucherText) return; // kursor geser, abaikan
+      _lastVoucherText = text;
+      context.read<ReviewOrderCubit>().onVoucherChanged(text);
+    });
+  }
+
+  @override
+  void dispose() {
+    voucherController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cubit = context.watch<ReviewOrderCubit>();
-    final TextEditingController voucherController = TextEditingController();
 
     return VirtualKeyboardScaffold(
       backgroundColor: theme.colorScheme.onPrimary,
@@ -66,12 +90,12 @@ class ReviewOrderPage extends StatelessWidget {
         builder: (context, state) {
           final currentQuantity = state.maybeWhen(
             initial: (quantity, totalPrice) => quantity,
-            loaded: (quantity, totalPrice) => quantity,
+            loaded: (quantity, totalPrice, discount) => quantity,
             orElse: () => cubit.quantity,
           );
           final currentTotalPrice = state.maybeWhen(
             initial: (quantity, totalPrice) => totalPrice,
-            loaded: (quantity, totalPrice) => totalPrice,
+            loaded: (quantity, totalPrice, discount) => totalPrice,
             orElse: () => cubit.totalPrice,
           );
           return Stack(
@@ -87,14 +111,10 @@ class ReviewOrderPage extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: RadialGradient(
                           center: Alignment.center,
-                          radius: 0.5, // = 50% di Figma
+                          radius: 0.5,
                           colors: [
-                            AppColors.primary500.withValues(
-                              alpha: 0.3,
-                            ), // #342114
-                            AppColors.primary500.withValues(
-                              alpha: 0.0,
-                            ), // rgba(52,33,20,0)
+                            AppColors.primary500.withValues(alpha: 0.3),
+                            AppColors.primary500.withValues(alpha: 0.0),
                           ],
                           stops: const [0, 0.5],
                         ),
@@ -142,7 +162,8 @@ class ReviewOrderPage extends StatelessWidget {
                               AppCard(
                                 borderRadius: 24,
                                 width: 1000,
-                                height: 412,
+                                height:
+                                    460, // naik dari 412 (nambah baris voucher)
                                 padding: EdgeInsets.all(42),
                                 child: SizedBox(
                                   width: 800,
@@ -218,7 +239,6 @@ class ReviewOrderPage extends StatelessWidget {
                                                 ),
                                               ],
                                             ),
-
                                             Row(
                                               children: [
                                                 AppButton(
@@ -245,7 +265,6 @@ class ReviewOrderPage extends StatelessWidget {
                                                       ),
                                                 ),
                                                 const SizedBox(width: 24),
-
                                                 AppButton(
                                                   label: "+",
                                                   width: 48,
@@ -349,7 +368,7 @@ class ReviewOrderPage extends StatelessWidget {
                                                 ),
                                           ),
                                           Text(
-                                            formatRupiah(cubit.pricePerItem),
+                                            formatRupiah(cubit.subtotal),
                                             style: AppTypography.titleMedium
                                                 .copyWith(
                                                   fontWeight: FontWeight.w500,
@@ -358,6 +377,33 @@ class ReviewOrderPage extends StatelessWidget {
                                           ),
                                         ],
                                       ),
+
+                                      // Baris voucher, muncul kalau kode valid
+                                      if (cubit.discountPercent > 0) ...[
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "Voucher ${cubit.voucherCode} (${cubit.discountPercent}%)",
+                                              style: AppTypography.titleMedium
+                                                  .copyWith(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: AppColors.textBase,
+                                                  ),
+                                            ),
+                                            Text(
+                                              "-${formatRupiah(cubit.discount)}",
+                                              style: AppTypography.titleMedium
+                                                  .copyWith(
+                                                    fontWeight: FontWeight.w500,
+                                                    color: AppColors.textBase,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
 
                                       // Garis Pemisah
                                       const Padding(
@@ -400,11 +446,7 @@ class ReviewOrderPage extends StatelessWidget {
                               SizedBox(height: 48),
                               AppButton(
                                 label: "Proceed To Payment",
-                                onTap: () {
-                                  final voucherCode = voucherController.text
-                                      .trim();
-                                  cubit.submitPayment(voucherCode);
-                                },
+                                onTap: () => cubit.submitPayment(),
                                 borderRadius: 41.5,
                                 width: 579,
                                 height: 85,

@@ -7,6 +7,7 @@ import 'package:our_memoirs_codebase/features/frame_selection/models/frame_model
 import 'package:our_memoirs_codebase/features/frame_selection/presentation/bloc/frame_selection_cubit.dart';
 import 'package:our_memoirs_codebase/features/frame_selection/presentation/page/frame_selection_page.dart';
 import 'package:our_memoirs_codebase/features/instruction/presentation/page/instruction_page.dart';
+import 'package:our_memoirs_codebase/features/onboarding/presentation/bloc/device_setting_cubit.dart';
 import 'package:our_memoirs_codebase/features/onboarding/presentation/page/onboarding_page.dart';
 import 'package:our_memoirs_codebase/features/payment/presentation/bloc/payment_cubit.dart';
 import 'package:our_memoirs_codebase/features/payment/presentation/page/payment_page.dart';
@@ -49,8 +50,14 @@ final GoRouter appRouter = GoRouter(
   routes: [
     GoRoute(
       path: AppRoutes.onboarding,
-      pageBuilder: (context, state) =>
-          fadePage(state: state, child: const OnboardingPage()),
+      pageBuilder: (context, state) => fadePage(
+        state: state,
+        child: BlocProvider(
+          lazy: false,
+          create: (context) => DeviceSettingCubit()..initDevices(),
+          child: const OnboardingPage(),
+        ),
+      ),
     ),
     GoRoute(
       path: AppRoutes.instruction,

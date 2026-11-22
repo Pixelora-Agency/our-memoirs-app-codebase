@@ -1,11 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:our_memoirs_codebase/app/routes/app_router.dart';
+import 'package:our_memoirs_codebase/core/constants/app_colors.dart';
 import 'package:our_memoirs_codebase/core/constants/app_typo.dart';
 import 'package:our_memoirs_codebase/core/widgets/ui/app_button.dart';
 
+import '../bloc/device_setting_cubit.dart';
+import '../widgets/settings.dart';
+
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({super.key});
+
+  void _openSettingsDialog(BuildContext context) {
+    final deviceSettingCubit = context.read<DeviceSettingCubit>();
+
+    showDialog(
+      context: context,
+      builder: (_) {
+        return BlocProvider.value(
+          value: deviceSettingCubit,
+          child: Dialog(
+            backgroundColor: AppColors.neutral50,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 420),
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: SettingsWidgets(),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +147,18 @@ class OnboardingPage extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 16,
+            right: 24,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onDoubleTap: () => _openSettingsDialog(context),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [SizedBox(width: 72, height: 72)],
               ),
             ),
           ),

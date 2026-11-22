@@ -8,7 +8,26 @@ class ReviewOrderCubit extends Cubit<ReviewOrderState> {
   int pricePerItem = 36000;
   int quantity = 1;
 
-  int get totalPrice => quantity * pricePerItem;
+  // --- VOUCHER ---
+  String voucherCode = '';
+  int discountPercent = 0;
+
+  // kode -> persen diskon (sesuaikan angkanya)
+  static const Map<String, int> _vouchers = {'PROMO123': 10, 'DISKON50': 50};
+
+  int get subtotal => quantity * pricePerItem;
+  int get discount => subtotal * discountPercent ~/ 100;
+  int get totalPrice => subtotal - discount;
+
+  void _emitLoaded() {
+    emit(
+      ReviewOrderState.loaded(
+        quantity: quantity,
+        totalPrice: totalPrice,
+        discount: discount,
+      ),
+    );
+  }
 
   Future<void> fetchOrderData() async {
     emit(const ReviewOrderState.loading());
@@ -18,62 +37,50 @@ class ReviewOrderCubit extends Cubit<ReviewOrderState> {
     emit(const ReviewOrderState.initial(quantity: 1, totalPrice: 36000));
   }
 
+  /// Dipanggil tiap user mengetik di field voucher
+  void onVoucherChanged(String input) {
+    voucherCode = input.trim().toUpperCase();
+    discountPercent = _vouchers[voucherCode] ?? 0;
+    _emitLoaded();
+  }
+
   void incrementQuantity() {
     quantity++;
-    emit(ReviewOrderState.loaded(quantity: quantity, totalPrice: totalPrice));
+    _emitLoaded();
   }
 
   void decrementQuantity() {
     if (quantity > 1) {
       quantity--;
-      emit(ReviewOrderState.loaded(quantity: quantity, totalPrice: totalPrice));
+      _emitLoaded();
     }
   }
 
-  Future<void> submitPayment(String? voucherCode) async {
+  Future<void> submitPayment() async {
+    // Kode diisi tapi tidak cocok dengan daftar voucher
+    if (voucherCode.isNotEmpty && discountPercent == 0) {
+      emit(
+        ReviewOrderState.error(
+          "Kode voucher '$voucherCode' tidak valid atau sudah kadaluarsa!",
+        ),
+      );
+      _emitLoaded();
+      return;
+    }
+
     emit(const ReviewOrderState.loading());
 
     await Future.delayed(const Duration(seconds: 3));
 
-    if (voucherCode != null && voucherCode.trim().isNotEmpty) {
-      final cleanCode = voucherCode.trim().toUpperCase();
+    // totalPrice sudah final (sudah dipotong diskon), tinggal dipakai
+    final qrPayload = discountPercent > 0
+        ? "https://api.qris.id/demo/qr-payload-promo-success"
+        : "https://api.qris.id/demo/qr-payload-normal-12345";
 
-      if (cleanCode == "PROMO123" || cleanCode == "DISKON50") {
-        const simulatedQrPayload =
-            "https://api.qris.id/demo/qr-payload-promo-success";
-        const idOrder = "OM-P0001";
-        emit(
-          const ReviewOrderState.success(
-            qrCodeData: simulatedQrPayload,
-            idOrder: idOrder,
-          ),
-        );
-        return;
-      } else {
-        emit(
-          ReviewOrderState.loaded(quantity: quantity, totalPrice: totalPrice),
-        );
-        emit(
-          ReviewOrderState.error(
-            "Kode voucher '$voucherCode' tidak valid atau sudah kadaluarsa!",
-          ),
-        );
-        return;
-      }
-    }
-
-    const simulatedQrPayload =
-        "https://api.qris.id/demo/qr-payload-normal-12345";
-    const idOrder = "OM-P0001";
-    emit(
-      const ReviewOrderState.success(
-        qrCodeData: simulatedQrPayload,
-        idOrder: idOrder,
-      ),
-    );
+    emit(ReviewOrderState.success(qrCodeData: qrPayload, idOrder: "OM-P0001"));
   }
 
   void resetState() {
-    emit(ReviewOrderState.loaded(quantity: quantity, totalPrice: totalPrice));
+    _emitLoaded();
   }
 }

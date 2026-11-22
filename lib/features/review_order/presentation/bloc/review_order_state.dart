@@ -12,6 +12,7 @@ class ReviewOrderState with _$ReviewOrderState {
   const factory ReviewOrderState.loaded({
     required int quantity,
     required int totalPrice,
+    @Default(0) int discount,
   }) = _Loaded;
   const factory ReviewOrderState.success({
     required String qrCodeData,
