@@ -45,6 +45,7 @@ class _PreviewViewState extends State<PreviewView> {
   Timer? timer;
   String? imagePaths;
   StateSetter? dialogStateSetter;
+  bool isLandscape = false;
 
   void countDown(String? path) {
     timer?.cancel();
@@ -61,7 +62,14 @@ class _PreviewViewState extends State<PreviewView> {
       } else {
         timer.cancel();
         Navigator.of(context).pop();
-        context.go(AppRoutes.result, extra: path);
+        context.go(
+          AppRoutes.result,
+          extra: {
+            'path': path,
+            'isLandscape':
+                widget.frame.orientation == FrameOrientation.landscape,
+          },
+        );
       }
     });
   }
@@ -101,7 +109,10 @@ class _PreviewViewState extends State<PreviewView> {
       );
 
       if (imageBytes != null && mounted) {
-        imagePaths = await PrinterService.printPhotoboxImage(imageBytes);
+        imagePaths = await PrinterService.printPhotoboxImage(
+          imageBytes,
+          isLandscape,
+        );
         setState(() {
           isSuccess = true;
         });
@@ -187,6 +198,8 @@ class _PreviewViewState extends State<PreviewView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    isLandscape = widget.frame.orientation == FrameOrientation.landscape;
+
     final List<String> imagePaths = widget.capturedPhotos
         .where((photo) => photo != null)
         .map((photo) => photo!.path)
@@ -221,15 +234,17 @@ class _PreviewViewState extends State<PreviewView> {
             ),
           ),
           Positioned(
-            bottom: 100,
-            left: 320,
+            bottom: isLandscape ? 150 : 100,
+            left: isLandscape ? 250 : 320,
             child: Transform.rotate(
               angle: -0.2,
               child: SizedBox(
-                height: 400,
-                width: 250,
+                height: isLandscape ? 300 : 400,
+                width: isLandscape ? 450 : 250,
                 child: AspectRatio(
-                  aspectRatio: 1200 / 1800, // Rasio standar photobox
+                  aspectRatio: isLandscape
+                      ? 1800 / 1200
+                      : 1200 / 1800, // Rasio standar photobox
                   child: FramePreview(
                     frame: widget.frame,
                     capturedImagePaths: imagePaths,
@@ -243,15 +258,17 @@ class _PreviewViewState extends State<PreviewView> {
             ),
           ),
           Positioned(
-            bottom: 100,
-            right: 320,
+            bottom: isLandscape ? 150 : 100,
+            right: isLandscape ? 250 : 320,
             child: Transform.rotate(
               angle: 0.2,
               child: SizedBox(
-                height: 400,
-                width: 250,
+                height: isLandscape ? 300 : 400,
+                width: isLandscape ? 450 : 250,
                 child: AspectRatio(
-                  aspectRatio: 1200 / 1800, // Rasio standar photobox
+                  aspectRatio: isLandscape
+                      ? 1800 / 1200
+                      : 1200 / 1800, // Rasio standar photobox
                   child: FramePreview(
                     frame: widget.frame,
                     capturedImagePaths: imagePaths,
@@ -305,12 +322,14 @@ class _PreviewViewState extends State<PreviewView> {
                       ),
                       SizedBox(height: 14),
                       SizedBox(
-                        height: 500,
-                        width: 360,
+                        height: isLandscape ? 450 : 500,
+                        width: isLandscape ? 650 : 360,
                         child: Screenshot(
                           controller: screenshotController,
                           child: AspectRatio(
-                            aspectRatio: 1200 / 1800, // Rasio standar photobox
+                            aspectRatio: isLandscape
+                                ? (1800 / 1200)
+                                : (1200 / 1800), // Rasio standar photobox
                             child: FramePreview(
                               frame: widget.frame,
                               capturedImagePaths: imagePaths,

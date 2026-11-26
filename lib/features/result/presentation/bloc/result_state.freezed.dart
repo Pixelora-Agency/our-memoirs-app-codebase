@@ -138,11 +138,11 @@ return success(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String imagePaths,  String selectedAction,  bool isQrMode,  String? downloadUrl,  String? shareUrl,  int timerCountdown)?  $default,{TResult Function()?  loading,TResult Function( String email)?  sendMail,TResult Function( String message)?  error,TResult Function()?  success,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String imagePaths,  String selectedAction,  bool isQrMode,  String? downloadUrl,  String? shareUrl,  int timerCountdown,  bool isLandscape)?  $default,{TResult Function()?  loading,TResult Function( String email)?  sendMail,TResult Function( String message)?  error,TResult Function()?  success,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Loading() when loading != null:
 return loading();case _ResultState() when $default != null:
-return $default(_that.imagePaths,_that.selectedAction,_that.isQrMode,_that.downloadUrl,_that.shareUrl,_that.timerCountdown);case _SendMail() when sendMail != null:
+return $default(_that.imagePaths,_that.selectedAction,_that.isQrMode,_that.downloadUrl,_that.shareUrl,_that.timerCountdown,_that.isLandscape);case _SendMail() when sendMail != null:
 return sendMail(_that.email);case _Error() when error != null:
 return error(_that.message);case _Success() when success != null:
 return success();case _:
@@ -163,11 +163,11 @@ return success();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String imagePaths,  String selectedAction,  bool isQrMode,  String? downloadUrl,  String? shareUrl,  int timerCountdown)  $default,{required TResult Function()  loading,required TResult Function( String email)  sendMail,required TResult Function( String message)  error,required TResult Function()  success,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String imagePaths,  String selectedAction,  bool isQrMode,  String? downloadUrl,  String? shareUrl,  int timerCountdown,  bool isLandscape)  $default,{required TResult Function()  loading,required TResult Function( String email)  sendMail,required TResult Function( String message)  error,required TResult Function()  success,}) {final _that = this;
 switch (_that) {
 case _Loading():
 return loading();case _ResultState():
-return $default(_that.imagePaths,_that.selectedAction,_that.isQrMode,_that.downloadUrl,_that.shareUrl,_that.timerCountdown);case _SendMail():
+return $default(_that.imagePaths,_that.selectedAction,_that.isQrMode,_that.downloadUrl,_that.shareUrl,_that.timerCountdown,_that.isLandscape);case _SendMail():
 return sendMail(_that.email);case _Error():
 return error(_that.message);case _Success():
 return success();case _:
@@ -187,11 +187,11 @@ return success();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String imagePaths,  String selectedAction,  bool isQrMode,  String? downloadUrl,  String? shareUrl,  int timerCountdown)?  $default,{TResult? Function()?  loading,TResult? Function( String email)?  sendMail,TResult? Function( String message)?  error,TResult? Function()?  success,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String imagePaths,  String selectedAction,  bool isQrMode,  String? downloadUrl,  String? shareUrl,  int timerCountdown,  bool isLandscape)?  $default,{TResult? Function()?  loading,TResult? Function( String email)?  sendMail,TResult? Function( String message)?  error,TResult? Function()?  success,}) {final _that = this;
 switch (_that) {
 case _Loading() when loading != null:
 return loading();case _ResultState() when $default != null:
-return $default(_that.imagePaths,_that.selectedAction,_that.isQrMode,_that.downloadUrl,_that.shareUrl,_that.timerCountdown);case _SendMail() when sendMail != null:
+return $default(_that.imagePaths,_that.selectedAction,_that.isQrMode,_that.downloadUrl,_that.shareUrl,_that.timerCountdown,_that.isLandscape);case _SendMail() when sendMail != null:
 return sendMail(_that.email);case _Error() when error != null:
 return error(_that.message);case _Success() when success != null:
 return success();case _:
@@ -244,7 +244,7 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 
 
 class _ResultState with DiagnosticableTreeMixin implements ResultState {
-  const _ResultState({required this.imagePaths, this.selectedAction = 'download', this.isQrMode = true, this.downloadUrl, this.shareUrl, this.timerCountdown = 120});
+  const _ResultState({required this.imagePaths, this.selectedAction = 'download', this.isQrMode = true, this.downloadUrl, this.shareUrl, this.timerCountdown = 120, this.isLandscape = false});
   
 
  final  String imagePaths;
@@ -253,6 +253,7 @@ class _ResultState with DiagnosticableTreeMixin implements ResultState {
  final  String? downloadUrl;
  final  String? shareUrl;
 @JsonKey() final  int timerCountdown;
+@JsonKey() final  bool isLandscape;
 
 /// Create a copy of ResultState
 /// with the given fields replaced by the non-null parameter values.
@@ -265,23 +266,23 @@ _$ResultStateCopyWith<_ResultState> get copyWith => __$ResultStateCopyWithImpl<_
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties
     ..add(DiagnosticsProperty('type', 'ResultState'))
-    ..add(DiagnosticsProperty('imagePaths', imagePaths))..add(DiagnosticsProperty('selectedAction', selectedAction))..add(DiagnosticsProperty('isQrMode', isQrMode))..add(DiagnosticsProperty('downloadUrl', downloadUrl))..add(DiagnosticsProperty('shareUrl', shareUrl))..add(DiagnosticsProperty('timerCountdown', timerCountdown));
+    ..add(DiagnosticsProperty('imagePaths', imagePaths))..add(DiagnosticsProperty('selectedAction', selectedAction))..add(DiagnosticsProperty('isQrMode', isQrMode))..add(DiagnosticsProperty('downloadUrl', downloadUrl))..add(DiagnosticsProperty('shareUrl', shareUrl))..add(DiagnosticsProperty('timerCountdown', timerCountdown))..add(DiagnosticsProperty('isLandscape', isLandscape));
 }
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResultState&&(identical(other.imagePaths, imagePaths) || other.imagePaths == imagePaths)&&(identical(other.selectedAction, selectedAction) || other.selectedAction == selectedAction)&&(identical(other.isQrMode, isQrMode) || other.isQrMode == isQrMode)&&(identical(other.downloadUrl, downloadUrl) || other.downloadUrl == downloadUrl)&&(identical(other.shareUrl, shareUrl) || other.shareUrl == shareUrl)&&(identical(other.timerCountdown, timerCountdown) || other.timerCountdown == timerCountdown));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResultState&&(identical(other.imagePaths, imagePaths) || other.imagePaths == imagePaths)&&(identical(other.selectedAction, selectedAction) || other.selectedAction == selectedAction)&&(identical(other.isQrMode, isQrMode) || other.isQrMode == isQrMode)&&(identical(other.downloadUrl, downloadUrl) || other.downloadUrl == downloadUrl)&&(identical(other.shareUrl, shareUrl) || other.shareUrl == shareUrl)&&(identical(other.timerCountdown, timerCountdown) || other.timerCountdown == timerCountdown)&&(identical(other.isLandscape, isLandscape) || other.isLandscape == isLandscape));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,imagePaths,selectedAction,isQrMode,downloadUrl,shareUrl,timerCountdown);
+    return Object.hash(runtimeType,imagePaths,selectedAction,isQrMode,downloadUrl,shareUrl,timerCountdown,isLandscape);
 }
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-    return 'ResultState(imagePaths: $imagePaths, selectedAction: $selectedAction, isQrMode: $isQrMode, downloadUrl: $downloadUrl, shareUrl: $shareUrl, timerCountdown: $timerCountdown)';
+    return 'ResultState(imagePaths: $imagePaths, selectedAction: $selectedAction, isQrMode: $isQrMode, downloadUrl: $downloadUrl, shareUrl: $shareUrl, timerCountdown: $timerCountdown, isLandscape: $isLandscape)';
 }
 
 
@@ -292,7 +293,7 @@ abstract mixin class _$ResultStateCopyWith<$Res> implements $ResultStateCopyWith
   factory _$ResultStateCopyWith(_ResultState value, $Res Function(_ResultState) _then) = __$ResultStateCopyWithImpl;
 @useResult
 $Res call({
- String imagePaths, String selectedAction, bool isQrMode, String? downloadUrl, String? shareUrl, int timerCountdown
+ String imagePaths, String selectedAction, bool isQrMode, String? downloadUrl, String? shareUrl, int timerCountdown, bool isLandscape
 });
 
 
@@ -309,7 +310,7 @@ class __$ResultStateCopyWithImpl<$Res>
 
 /// Create a copy of ResultState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? imagePaths = null,Object? selectedAction = null,Object? isQrMode = null,Object? downloadUrl = freezed,Object? shareUrl = freezed,Object? timerCountdown = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? imagePaths = null,Object? selectedAction = null,Object? isQrMode = null,Object? downloadUrl = freezed,Object? shareUrl = freezed,Object? timerCountdown = null,Object? isLandscape = null,}) {
   return _then(_ResultState(
 imagePaths: null == imagePaths ? _self.imagePaths : imagePaths // ignore: cast_nullable_to_non_nullable
 as String,selectedAction: null == selectedAction ? _self.selectedAction : selectedAction // ignore: cast_nullable_to_non_nullable
@@ -317,7 +318,8 @@ as String,isQrMode: null == isQrMode ? _self.isQrMode : isQrMode // ignore: cast
 as bool,downloadUrl: freezed == downloadUrl ? _self.downloadUrl : downloadUrl // ignore: cast_nullable_to_non_nullable
 as String?,shareUrl: freezed == shareUrl ? _self.shareUrl : shareUrl // ignore: cast_nullable_to_non_nullable
 as String?,timerCountdown: null == timerCountdown ? _self.timerCountdown : timerCountdown // ignore: cast_nullable_to_non_nullable
-as int,
+as int,isLandscape: null == isLandscape ? _self.isLandscape : isLandscape // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

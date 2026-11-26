@@ -173,4 +173,24 @@ final List<FrameModel> dataFrames = [
       PhotoSlot(left: 170, top: 860, width: 420, height: 450),
     ],
   ),
+
+  const FrameModel(
+    id: 'frame_10',
+    name: 'La Galerie des Instants',
+    imageAsset: 'assets/images/frames/10.png',
+    orientation: FrameOrientation.landscape,
+    slotCount: 5,
+    photoPositions: [
+      // Kiri atas
+      PhotoSlot(left: 80, top: 70, width: 550, height: 450),
+      // Tengah atas
+      PhotoSlot(left: 660, top: 70, width: 550, height: 450),
+      // Kiri bawah
+      PhotoSlot(left: 80, top: 500, width: 550, height: 450),
+      // Tengah bawah
+      PhotoSlot(left: 660, top: 500, width: 550, height: 450),
+      // Kanan atas
+      PhotoSlot(left: 1340, top: 115, width: 410, height: 410),
+    ],
+  ),
 ];

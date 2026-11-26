@@ -10,7 +10,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PrinterService {
   static const String _printerKey = 'selected_printer_name';
 
-  static Future<String?> printPhotoboxImage(Uint8List imageBytes) async {
+  static Future<String?> printPhotoboxImage(
+    Uint8List imageBytes,
+    bool isLandscape,
+  ) async {
     try {
       final printers = await Printing.listPrinters();
       if (printers.isEmpty) {
@@ -49,10 +52,14 @@ class PrinterService {
       final pdf = pw.Document();
       final image = pw.MemoryImage(await imageFile.readAsBytes());
 
+      final PdfPageFormat pageFormat = isLandscape
+          ? const PdfPageFormat(432, 288, marginAll: 0)
+          : const PdfPageFormat(288, 432, marginAll: 0);
+
       // 4R (4 x 6 inch) = 288 x 432 pt
       pdf.addPage(
         pw.Page(
-          pageFormat: const PdfPageFormat(288, 432, marginAll: 0),
+          pageFormat: pageFormat,
           build: (pw.Context context) {
             return pw.Center(child: pw.Image(image, fit: pw.BoxFit.fill));
           },

@@ -59,6 +59,7 @@ class ResultPage extends StatelessWidget {
                 : value.shareUrl;
             final toggleQrcode = value.isQrMode;
             final timer = value.timerCountdown;
+            final isLandscape = value.isLandscape;
 
             return Stack(
               children: [
@@ -88,30 +89,32 @@ class ResultPage extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  bottom: 50,
-                  left: 150,
+                  bottom: isLandscape ? 100 : 50,
+                  left: isLandscape ? 450 : 150,
                   child: Transform.rotate(
                     angle: -0.2,
                     child: SizedBox(
-                      height: 450,
-                      width: 260,
+                      height: isLandscape ? 260 : 450,
+                      width: isLandscape ? 450 : 260,
                       child: AspectRatio(
-                        aspectRatio: 1200 / 1800, // Rasio standar photobox
+                        aspectRatio: isLandscape
+                            ? 1800 / 1200
+                            : 1200 / 1800, // Rasio standar photobox
                         child: Image.file(File(imagePath)),
                       ),
                     ),
                   ),
                 ),
                 Positioned(
-                  bottom: 50,
-                  left: 450,
+                  bottom: isLandscape ? 100 : 50,
+                  left: isLandscape ? 10 : 450,
                   child: Transform.rotate(
                     angle: 0.2,
                     child: SizedBox(
-                      height: 450,
-                      width: 260,
+                      height: isLandscape ? 260 : 450,
+                      width: isLandscape ? 450 : 260,
                       child: AspectRatio(
-                        aspectRatio: 1200 / 1800, // Rasio standar photobox
+                        aspectRatio: isLandscape ? 1800 / 1200 : 1200 / 1800,
                         child: Image.file(File(imagePath)),
                       ),
                     ),
@@ -124,15 +127,19 @@ class ResultPage extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  bottom: 30,
-                  left: -35,
+                  bottom: isLandscape ? 90 : 30,
+                  left: isLandscape ? -20 : -35,
                   child: Transform.rotate(
                     angle: 0,
                     child: SizedBox(
-                      width: size.width * 0.7, // 35% dari lebar layar
-                      height: size.height * 0.9,
+                      width:
+                          size.width *
+                          (isLandscape ? 0.7 : 0.7), // 35% dari lebar layar
+                      height: size.height * (isLandscape ? 0.7 : 0.9),
                       child: AspectRatio(
-                        aspectRatio: 1200 / 1800, // Rasio standar photobox
+                        aspectRatio: isLandscape
+                            ? 1800 / 1200
+                            : 1200 / 1800, // Rasio standar photobox
                         child: Image.file(File(imagePath)),
                       ),
                     ),

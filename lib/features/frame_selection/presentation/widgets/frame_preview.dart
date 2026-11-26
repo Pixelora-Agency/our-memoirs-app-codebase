@@ -28,8 +28,9 @@ class FramePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double designWidth = 1200;
-    const double designHeight = 1800;
+    final bool isLandscape = frame.orientation == FrameOrientation.landscape;
+    final double designWidth = isLandscape ? 1800 : 1200;
+    final double designHeight = isLandscape ? 1200 : 1800;
 
     final bool afterTakePhoto = isPhotoFull && (chanceRetake ?? 0) == 0;
 

@@ -39,6 +39,8 @@ class CameraSessionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isLandscape =
+        frameConfig.orientation == FrameOrientation.landscape;
     final int filledPhotosCount = capturedPhotos
         .where((photo) => photo != null)
         .length;
@@ -133,6 +135,7 @@ class CameraSessionView extends StatelessWidget {
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
 
                           children: [
                             AnimatedSize(
@@ -178,7 +181,9 @@ class CameraSessionView extends StatelessWidget {
                                               style: AppTypography.titleMedium,
                                             ),
                                           ),
-                                          SizedBox(height: 12),
+                                          SizedBox(
+                                            height: isLandscape ? 24 : 12,
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -201,7 +206,9 @@ class CameraSessionView extends StatelessWidget {
                                             textAlign: TextAlign.center,
                                             style: AppTypography.bodyMedium,
                                           ),
-                                          SizedBox(height: 12),
+                                          SizedBox(
+                                            height: isLandscape ? 24 : 12,
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -228,7 +235,9 @@ class CameraSessionView extends StatelessWidget {
                                             textAlign: TextAlign.center,
                                             style: AppTypography.bodyMedium,
                                           ),
-                                          SizedBox(height: 12),
+                                          SizedBox(
+                                            height: isLandscape ? 24 : 12,
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -238,8 +247,8 @@ class CameraSessionView extends StatelessWidget {
                             ),
 
                             Container(
-                              height: 380,
-                              width: 280,
+                              height: isLandscape ? 280 : 380,
+                              width: isLandscape ? 365 : 280,
                               padding: EdgeInsets.all(6),
                               decoration: BoxDecoration(
                                 color: Colors.white.withValues(alpha: 0.2),
@@ -256,7 +265,7 @@ class CameraSessionView extends StatelessWidget {
                             if ((filledPhotosCount >= totalSlots &&
                                     chanceRetake == 0) ||
                                 chanceRetake == 2) ...[
-                              SizedBox(height: 12),
+                              SizedBox(height: isLandscape ? 24 : 12),
                               AppButton(
                                 label: "I'm Done",
                                 width: 170,

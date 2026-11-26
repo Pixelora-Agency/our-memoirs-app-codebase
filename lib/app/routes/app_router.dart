@@ -116,11 +116,14 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.result,
       pageBuilder: (context, state) {
-        final String imagePaths = state.extra as String;
+        final Map<String, dynamic> args = state.extra as Map<String, dynamic>;
+        final String imagePaths = args['path'] as String;
+        final bool isLandscape = args['isLandscape'] as bool? ?? false;
         return fadePage(
           state: state,
           child: BlocProvider(
-            create: (context) => ResultCubit()..initialRender(imagePaths),
+            create: (context) =>
+                ResultCubit()..initialRender(imagePaths, isLandscape),
             child: const ResultPage(),
           ),
         );

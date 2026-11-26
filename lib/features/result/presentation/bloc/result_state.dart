@@ -13,6 +13,7 @@ abstract class ResultState with _$ResultState {
     String? downloadUrl,
     String? shareUrl,
     @Default(120) int timerCountdown,
+    @Default(false) bool isLandscape,
   }) = _ResultState;
   const factory ResultState.sendMail({required String email}) = _SendMail;
   const factory ResultState.error({required String message}) = _Error;

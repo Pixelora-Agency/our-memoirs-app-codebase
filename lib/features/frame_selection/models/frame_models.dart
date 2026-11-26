@@ -14,10 +14,13 @@ class PhotoSlot {
   });
 }
 
+enum FrameOrientation { portrait, landscape }
+
 class FrameModel {
   final String id;
   final String name;
   final String imageAsset;
+  final FrameOrientation orientation;
   final int slotCount;
   final List<PhotoSlot> photoPositions; // <-- Daftar koordinat lubang foto
 
@@ -25,6 +28,7 @@ class FrameModel {
     required this.id,
     required this.name,
     required this.imageAsset,
+    this.orientation = FrameOrientation.portrait,
     required this.slotCount,
     required this.photoPositions,
   });

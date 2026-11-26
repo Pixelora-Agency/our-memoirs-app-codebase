@@ -14,7 +14,7 @@ class ResultCubit extends Cubit<ResultState> {
 
   ResultCubit() : super(const ResultState(imagePaths: ''));
 
-  Future<void> initialRender(String imagePaths) async {
+  Future<void> initialRender(String imagePaths, bool isLandscape) async {
     emit(const ResultState.loading());
 
     try {
@@ -33,6 +33,7 @@ class ResultCubit extends Cubit<ResultState> {
           downloadUrl: downloadUrl,
           shareUrl: sendUrl,
           timerCountdown: 120,
+          isLandscape: isLandscape,
         ),
       );
 
